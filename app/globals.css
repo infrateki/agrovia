@@ -28,6 +28,27 @@
   --bottom-bar-height: 64px;
   --right-panel-width: 340px;
   --topbar-height: 48px;
+
+  /* Phase 4 — Jony Ive / old-money frosted-glass design tokens */
+  --nav-height: 56px;
+  --color-glass-04: rgba(255, 255, 255, 0.04);
+  --color-glass-05: rgba(255, 255, 255, 0.05);
+  --color-glass-07: rgba(255, 255, 255, 0.07);
+  --color-glass-08: rgba(255, 255, 255, 0.08);
+  --color-hairline: rgba(255, 255, 255, 0.07);
+  --color-hairline-soft: rgba(255, 255, 255, 0.06);
+  --color-warm-gold: #d4b88a;
+  --color-warm-gold-dim: rgba(212, 184, 138, 0.72);
+  --color-text-warm: #f5f0e8;
+  --color-text-warm-60: rgba(245, 240, 232, 0.6);
+  --color-text-warm-40: rgba(245, 240, 232, 0.4);
+  --glass-blur-2xl: blur(28px) saturate(140%);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  :root {
+    --color-glass-04: rgba(255, 255, 255, 0.08);
+  }
 }
 
 *,

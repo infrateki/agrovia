@@ -16,6 +16,12 @@ interface UiState {
   setRightPanelOpen: (open: boolean) => void;
   cinematicMode: boolean;
   setCinematicMode: (on: boolean) => void;
+
+  // Phase 4 — contextual shipment detail panel
+  detailPanelOpen: boolean;
+  selectedShipmentId: string | null;
+  openDetail: (id: string) => void;
+  closeDetail: () => void;
 }
 
 export const useUiStore = create<UiState>((set) => ({
@@ -37,4 +43,9 @@ export const useUiStore = create<UiState>((set) => ({
   setRightPanelOpen: (open) => set({ rightPanelOpen: open }),
   cinematicMode: false,
   setCinematicMode: (on) => set({ cinematicMode: on }),
+
+  detailPanelOpen: false,
+  selectedShipmentId: null,
+  openDetail: (id) => set({ detailPanelOpen: true, selectedShipmentId: id }),
+  closeDetail: () => set({ detailPanelOpen: false }),
 }));

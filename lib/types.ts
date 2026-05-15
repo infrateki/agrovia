@@ -33,7 +33,7 @@ export type NavViewId =
   | 'cuentas'
   | 'calidad'
   | 'frio'
-  | 'senales'
+  | 'radar'
   | 'social'
   | 'grafo'
   | 'config';

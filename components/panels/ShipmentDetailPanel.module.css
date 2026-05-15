@@ -1,0 +1,176 @@
+.card {
+  position: fixed;
+  top: calc(var(--nav-height) + 12px);
+  right: 16px;
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100vh - var(--nav-height) - 32px);
+  z-index: 45;
+  background: var(--color-glass-08);
+  backdrop-filter: var(--glass-blur-2xl);
+  -webkit-backdrop-filter: var(--glass-blur-2xl);
+  border: 1px solid var(--color-hairline);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: detailIn 200ms ease-out;
+  color: var(--color-text-warm);
+}
+
+.card.closing {
+  animation: detailOut 180ms ease-in forwards;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-warm-gold-dim);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-warm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline-soft);
+  color: var(--color-text-warm-60);
+  flex-shrink: 0;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.close:hover {
+  background: var(--color-glass-08);
+  color: var(--color-text-warm);
+}
+
+.body {
+  padding: 14px 16px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-warm-60);
+}
+
+.kvGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.kv {
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.kvLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-warm-40);
+  margin-bottom: 4px;
+}
+
+.kvValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-warm);
+}
+
+.riskRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--color-text-warm-60);
+}
+
+.riskDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.riskDotHigh {
+  background: #d97c5a;
+  box-shadow: 0 0 8px rgba(217, 124, 90, 0.5);
+}
+
+.riskDotMid {
+  background: #d4b88a;
+}
+
+.riskDotLow {
+  background: #6ea88a;
+}
+
+@keyframes detailIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes detailOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    top: auto;
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: 70vh;
+    border-radius: 16px;
+  }
+}

@@ -33,6 +33,9 @@ export function StoryMode() {
   const startStory = useCinematicStore((s) => s.startStory);
 
   const setCinematicMode = useUiStore((s) => s.setCinematicMode);
+  const openDetail = useUiStore((s) => s.openDetail);
+  const closeDetail = useUiStore((s) => s.closeDetail);
+  const setActiveView = useUiStore((s) => s.setActiveView);
   const setSelectedZone = useSelectionStore((s) => s.setSelectedZone);
 
   const beatsRef = useRef<AppliedBeats>({ lastZoneApplied: undefined });
@@ -41,16 +44,35 @@ export function StoryMode() {
 
   const active = storyStatus !== 'idle';
 
-  // Drive cinematicMode flag + dim class on <body>
+  // Drive cinematicMode flag + dim class on <body>. Also jump to the 3D view
+  // (grafo) so the demo plays full-bleed, and ensure the detail panel is closed
+  // until a scripted beat opens it.
   useEffect(() => {
     if (!active) return;
     setCinematicMode(true);
     document.body.classList.add('story-mode-on');
+    setActiveView('grafo');
+    closeDetail();
     return () => {
       setCinematicMode(false);
       document.body.classList.remove('story-mode-on');
+      closeDetail();
     };
-  }, [active, setCinematicMode]);
+  }, [active, setCinematicMode, setActiveView, closeDetail]);
+
+  // Scene-driven shipment detail: scenes 2-4 are about S-8842. Open the
+  // shipment panel via the store (no DOM touching), close on scene 5/idle.
+  useEffect(() => {
+    if (!active) return;
+    if (currentScene >= 2 && currentScene <= 4) {
+      // grafo view suppresses the panel; switch to frio so the panel renders
+      // alongside the 3D detail of the cold chain scenes.
+      setActiveView('frio');
+      openDetail('S-8842');
+    } else {
+      closeDetail();
+    }
+  }, [active, currentScene, openDetail, closeDetail, setActiveView]);
 
   // Clock + scene resolution
   useEffect(() => {

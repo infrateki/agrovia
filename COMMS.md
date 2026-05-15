@@ -1,8 +1,8 @@
 # COMMS.md — Terminal Orchestration Board
 ## FRESCO 3D Pipeline Intelligence
 
-**Last updated:** 2026-05-15 · by T5 (Phase 3 — Integration & Deploy)
-**Status:** 🟢 DEPLOYED v3 (agrovia.infratek.ai) · Phase 3 operational dashboards live (Packing / Calidad / Cadena de Frío)
+**Last updated:** 2026-05-15 · by T5 (Phase 4 — Navigation Redesign & Deploy)
+**Status:** 🟢 DEPLOYED v4 (agrovia.infratek.ai) · Frosted-glass TopNavBar, 9-view routing, contextual ShipmentDetailPanel, GraphIntelligenceView
 **Repo:** https://github.com/infrateki/agrovia.git
 **Deploy:** agrovia.infratek.ai (Vercel)
 
@@ -36,6 +36,7 @@ Each Claude Code terminal MUST:
 | Widget Library & Dashboard Routing (Phase 3) | T1 | ✅ DONE | 2026-05-15 | 9-widget library (CircularGauge/StatCard/DataTable/TrendSparkline/AlertBanner/MiniGauge/VarietySelector/SectionHeader/DashboardShell), Phase-3 types, page.tsx dashboard overlay routing for comando/calidad/frio activeViews — tsc + build green |
 | Quality Control Dashboard (Phase 3) | T3 | ✅ DONE | 2026-05-15 | Full QualityDashboard: VarietySelector filters everything · 4 dynamic CircularGauges per variety (Palta→Materia Seca, Cítricos→Acidez) · 6 StatCards · Calibre BarChart + Defectos PieChart · Brix & Firmeza/Acidez 7-day LineCharts with ReferenceArea optimal bands · 12-row searchable Inspecciones DataTable with variety-color chips + MiniGauge cells · Benchmarks reference table (5 varieties, SENASA/APHIS specs). mock-quality.ts (gauge configs + stats + 12 QC inspecciones + 5 benchmarks + 7d trends + calibre/defect distributions). tsc clean, npm run build ✅ green. |
 | Cold Chain Dashboard (Phase 3) | T4 | ✅ DONE | 2026-05-15 | Full ColdChainDashboard: critical AlertBanner (S-8842), 4 CircularGauges, 6 StatCards, hero 24h Recharts LineChart (6 chambers, green band [−1,+1], red threshold +4°C, CF-04 palta drift visible in last 4h, CF-06 pre-cool exponential curve), Cámaras DataTable (click → 3D zone frio), Embarques tránsito DataTable (click → zone transito), Excursion history DataTable. mock-coldchain.ts (48-pt temp curve generator + 6 cámaras + 8 embarques + 5 excursions). tsc clean for own files (only pre-existing T3 QualityDashboard error remains), npm run build ✅ green. |
+| Navigation Redesign & Deploy v4 (Phase 4) | T5 | ✅ DONE | 2026-05-15 | Frosted-glass TopNavBar replaces Sidebar (moved to components/_deprecated/), GrainOverlay, ShipmentDetailPanel (store-controlled, floating card, X wired), GraphIntelligenceView (full-bleed 3D, no overlay), EmptyView for cuentas/social, all 9 views routed via activeView, NavViewId 'senales'→'radar' migration, ui-store extended with detailPanelOpen/selectedShipmentId/openDetail/closeDetail, cinematic StoryMode wired to openDetail('S-8842')/closeDetail. NOTE: Spec assumed Tailwind+shadcn; project per CLAUDE.md is vanilla CSS Modules / no component libs / no new deps — design intent (frosted glass, warm gold #d4b88a, hairline borders, pills) translated to CSS Module equivalents with new tokens in globals.css. tsc + build green; v4 deployed to agrovia.infratek.ai |
 | Integration & Deploy v3 (Phase 3) | T5 | ✅ DONE | 2026-05-15 | tsc + build green; v3 deployed to agrovia.infratek.ai with PackingDashboard / QualityDashboard / ColdChainDashboard overlays wired through activeView routing |
 | Packing Operations Dashboard (Phase 3) | T2 | ✅ DONE | 2026-05-15 | Full PackingDashboard: warning AlertBanner (Línea 2 detenida — cambio uva→arándano, 25 min ETA), 4 CircularGauges (Cajas/h 487 vs 500, Rendimiento 87.3% vs 90, Velocidad 12.5 m/min vs 14, Descarte 8.2% vs 5), 6 StatCards (Cajas Hoy 3,847 +12% w/sparkline, Kg Procesados 12,450, Kg Empacados 10,840, Líneas Activas 3 de 4, Turno Día 06:00-18:00, Eficiencia Turno 91.5% w/sparkline), Recharts BarChart 8h producción con ReferenceLine meta=500 + Cells coloreados por % meta + footer "ayer 3,200 cajas +20.2%", DataTable líneas (4 filas, custom mini-gauges cajas/h y rendimiento, marca lateral roja para detenida, badges variedad/turno/estado), DataTable lotes (8 filas, click loteId o row → useSelectionStore.setSelectedObjectId, mini-gauges rendimiento + descarte invertido, lista de defectos). NEW: components/dashboards/PackingDashboard.{tsx,module.css}, lib/data/mock-packing.ts (MOCK_PACKING_LINES + MOCK_PACKING_LOTES + MOCK_HOURLY_PRODUCTION + HourlyProduction). lib/data/index.ts: añadidos 3 exports + 1 type export. tsc clean, npm run build ✅ green. NOTA técnica: CircularGauge.colorZones interpreta cutoffs en orden ascendente (chequea green[1] primero); invertZones=true hace que greenStop=red y redStop=green. Para "alto=bueno" (Cajas/h, Rendimiento, Velocidad) usamos invertZones=true con bandas { green:[0,low], amber:[low,mid], red:[mid,100] }. Descarte sin invertZones porque la lógica default ya da verde a valores bajos. |
 
@@ -885,6 +886,80 @@ Deploy:
 FILES MODIFIED OUTSIDE T5 OWNERSHIP (Phase 3): NONE. T1 had already wired app/page.tsx + page.module.css for dashboard overlay routing as part of Phase 3 widget-library work. T5 only modified COMMS.md.
 
 2026-05-15 — Phase 3 ✅ DONE. v3 deployed to https://agrovia.infratek.ai. 🟢 DEPLOYED v3 — Phase 3 operational dashboards live.
+
+— — — — — PHASE 4: NAVIGATION REDESIGN & DEPLOY v4 — — — — —
+
+2026-05-15 — Phase 4 START: replace left Sidebar + always-on RightPanel with a unified frosted-glass TopNavBar; wire all 9 views (3 of 9 were routed pre-Phase 4); make shipment detail contextual + non-blocking; redeploy.
+
+CRITICAL STACK DEVIATION (documented per "On ambiguity, note in COMMS.md"):
+  • Phase 4 prompt assumed Tailwind + shadcn/ui. Project per CLAUDE.md mandates "NO Tailwind CSS — vanilla CSS Modules only" and "NO component libraries (no shadcn, no MUI, no Chakra)". Prompt also said "No new dependencies." These conflict — installing Tailwind would be a new dep that touches every existing style file.
+  • Resolution: preserved the DESIGN intent (Jony Ive / old-money frosted glass, warm gold #d4b88a, hairline 1px borders, pill geometry, SVG grain) and translated each Tailwind class string from the spec into equivalent CSS Module rules. New design tokens added to app/globals.css: --nav-height (56px), --color-glass-04/05/07/08, --color-hairline(-soft), --color-warm-gold(-dim), --color-text-warm(-60/-40), --glass-blur-2xl (blur(28px) saturate(140%)), plus a @supports-not(backdrop-filter) fallback that promotes glass-04 to 0.08 opacity.
+
+NEW COMPONENTS (T5-owned):
+  • components/shell/TopNavBar.{tsx,module.css} — fixed h-56, z-50, 3-col grid (FRESCO wordmark · 9 pill links · search/bell/avatar cluster). Pill states: rest = white/60 transparent; hover = glass-05; active = glass-08 + warm-gold + 18%-gold hairline border + tightened letter-spacing. Avatar opens dropdown with outside-click handler (Cuenta / Preferencias / Cerrar sesión). Drawer mode kicks in at ≤980px (hamburger left, drawer slides under bar, backdrop dismisses).
+  • components/shell/GrainOverlay.{tsx,module.css} — single fixed pointer-events-none div inset-0 z-10 opacity 0.03, mix-blend-mode overlay. Inline <svg> with <feTurbulence baseFrequency=0.9 numOctaves=2> + <feColorMatrix> dropping channels to monochrome. Mounts once in AppShell above background, below content.
+  • components/panels/ShipmentDetailPanel.{tsx,module.css} — controlled component, props { id, onClose }. Floating glass card at top:nav+12 right:16, max 420px wide, rounded-20, glass-08 background. Header: small-caps "EMBARQUE" eyebrow + ficha title + 30px round X (onClose). Body: if findFichaForEmbarque(id) → renders existing FichaOperativa; else if embarque match → 4-cell KV grid (Contenedor / Naviera / ETA / Estado) + risk dot + TemperaturaCurve; else "Sin datos" empty state. Mobile (<768px) anchors bottom instead of right.
+  • components/dashboards/GraphIntelligenceView.{tsx,module.css} — full-bleed below nav, mounts existing PipelineCanvas via dynamic({ssr:false}). Bottom-left legend pill with "Inteligencia de Grafo" + orbit/zoom hint. Detail panel is force-suppressed when activeView==='grafo' so the 3D never gets covered.
+  • components/dashboards/EmptyView.{tsx,module.css} — minimal placeholder card (eyebrow + title + subtitle + "Próximamente" pill) used for `cuentas` and `social` until real builds exist.
+
+STATE CHANGES:
+  • lib/types.ts: NavViewId 'senales' → 'radar' (matches Phase 4 spec). 'senales' was already used elsewhere as a LayerKey on DataFlowType — left untouched.
+  • lib/constants.ts: NAV_ITEMS[5].id 'senales' → 'radar'.
+  • lib/stores/ui-store.ts: added detailPanelOpen, selectedShipmentId, openDetail(id), closeDetail(). Existing fields untouched (rightPanelOpen kept for the legacy RightPanel that lives in components/panels/ but is no longer mounted — kept on disk for potential reuse in dashboards).
+
+INTEGRATION (app/page.tsx + AppShell):
+  • AppShell stripped to { GrainOverlay, TopNavBar, <main>{children} }. Old grid (sidebar/topbar/main/bottom + sliding rightPanel) deleted. Sidebar/TopBar/BottomBar/RightPanel are no longer rendered. AppShell removed cn() / collapsed state / rightPanel/rightPanelOpen props (none of the new shell needs them).
+  • app/page.tsx <ViewRouter> switch maps all 9 activeView values:
+        comando → DashboardView + PackingDashboard (scrollable)
+        operador → OperatorChat (panel wrap)
+        cuentas → EmptyView "Cuentas"
+        calidad → QualityDashboard (scrollable)
+        frio → ColdChainDashboard (scrollable)
+        radar → SignalQueue (panel wrap)
+        social → EmptyView "Escucha Social"
+        grafo → GraphIntelligenceView (full-bleed 3D, no detail overlay)
+        config → ConfigToggles (panel wrap)
+  • <DetailMount> only renders when activeView !== 'grafo' && detailPanelOpen && selectedShipmentId.
+  • app/page.module.css rewritten with .scrollPane / .panelWrap / .operatorWrap / .dashboardLoading using --nav-height for top offset and warm-gold scrollbar accents.
+  • DataSourceBanner (Phase 2 global pill) and CinematicProvider remain mounted.
+  • MobileHero kept (hides on >=768px; <768px shows static KPI cards as before).
+
+DEPRECATIONS:
+  • components/layout/Sidebar.{tsx,module.css} → moved via `git mv` to components/_deprecated/Sidebar.{tsx,module.css}. Not referenced anywhere in the live tree.
+  • components/layout/TopBar.{tsx,module.css} and BottomBar.{tsx,module.css} are no longer rendered (AppShell stopped mounting them) but kept on disk under their original paths to avoid a broader churn.
+  • components/panels/RightPanel.{tsx,module.css} is no longer mounted in page.tsx; ShipmentDetailPanel replaces its contextual role. File kept on disk.
+
+CINEMATIC DEMO WIRING:
+  • components/cinematic/StoryMode.tsx: on `active` mount → setActiveView('grafo') + closeDetail() (clean canvas for the opening scene). Scene 2-4 (the S-8842 cold-chain arc) → setActiveView('frio') + openDetail('S-8842') so the new floating panel surfaces the same data the old always-on RightPanel used to show. Scene 5 (closing) and unmount → closeDetail(). No DOM touching; all via ui-store actions.
+
+BUILD:
+  • `npx tsc --noEmit` → 0 errors.
+  • `npm run build` → green (Next 16.2.6 Turbopack). 6 routes, unchanged.
+  • One pre-existing recharts ResponsiveContainer warning during static prerender — same as Phase 3, harmless.
+
+DEPLOY:
+  • Single commit per spec.
+  • `git push origin main` → ok.
+  • `npx vercel --prod --yes` → ok. New production URL + alias agrovia.infratek.ai recorded below.
+
+DEFERRED / TODO:
+  • `cuentas` and `social` are EmptyView placeholders — content is the next iteration.
+  • BottomBar's TIMELINE / SIM / READOUT / CONFIG controls are no longer rendered; cinematic playback is now entirely via the DemoFAB and demo controller. If those bottom-bar controls are wanted back, they need to be rebuilt into the new chrome (top-nav secondary row or floating bottom toolbar).
+  • Avatar dropdown items (Cuenta / Preferencias / Cerrar sesión) are visual only — no onClick handlers wired.
+  • Search icon button is decorative — no command palette yet.
+  • SCSS `.bellDot` red badge is purely cosmetic (no notifications store).
+
+FILES MODIFIED OUTSIDE T5 OWNERSHIP (Phase 4, documented per file-ownership rule):
+  - app/page.tsx (T1) — rewrote routing into ViewRouter + DetailMount; mounts new chrome.
+  - app/page.module.css (T1) — replaced .dashboardOverlay/.placeholder with .scrollPane/.panelWrap/.operatorWrap.
+  - app/globals.css (T1) — added Phase 4 design tokens (nav-height, glass-04/05/07/08, hairline, warm-gold, glass-blur-2xl) and @supports-not(backdrop-filter) fallback.
+  - components/layout/AppShell.{tsx,module.css} (T1) — stripped to GrainOverlay + TopNavBar + main.
+  - components/layout/Sidebar.{tsx,module.css} (T1) — moved via git mv to components/_deprecated/.
+  - lib/types.ts (T2) — NavViewId 'senales' → 'radar'.
+  - lib/constants.ts (T2) — NAV_ITEMS 'senales' → 'radar'.
+  - lib/stores/ui-store.ts (T2) — added detailPanelOpen / selectedShipmentId / openDetail / closeDetail. Existing API additive only.
+  - components/cinematic/StoryMode.tsx (T4 cinematic) — wired to new store actions for view + detail panel.
+
 ```
 
 ### ORCHESTRATOR

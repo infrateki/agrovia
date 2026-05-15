@@ -118,7 +118,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'cuentas', label: 'Cuentas', iconName: 'UsersRound' },
   { id: 'calidad', label: 'Calidad', iconName: 'PackageCheck' },
   { id: 'frio', label: 'Cadena de Frío', iconName: 'Thermometer' },
-  { id: 'senales', label: 'Radar de Señales', iconName: 'Radar' },
+  { id: 'radar', label: 'Radar de Señales', iconName: 'Radar' },
   { id: 'social', label: 'Escucha Social', iconName: 'Ear' },
   { id: 'grafo', label: 'Inteligencia de Grafo', iconName: 'Network' },
   { id: 'config', label: 'Configuración', iconName: 'Settings' },

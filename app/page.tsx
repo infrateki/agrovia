@@ -3,41 +3,23 @@
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { RightPanel } from "@/components/panels/RightPanel";
 import { MobileHero } from "@/components/layout/MobileHero";
 import { CinematicProvider } from "@/components/cinematic";
 import { DataSourceBanner } from "@/components/layout/DataSourceBanner";
 import { DashboardView } from "@/components/panels/DashboardView";
+import { OperatorChat } from "@/components/panels/OperatorChat";
+import { SignalQueue } from "@/components/panels/SignalQueue";
+import { ConfigToggles } from "@/components/panels/ConfigToggles";
+import { ShipmentDetailPanel } from "@/components/panels/ShipmentDetailPanel";
+import { EmptyView } from "@/components/dashboards/EmptyView";
 import { useUiStore } from "@/lib/stores/ui-store";
 import styles from "./page.module.css";
-
-const PipelineCanvas = dynamic(
-  () =>
-    import("@/components/three/PipelineCanvas").then((m) => ({
-      default: m.PipelineCanvas,
-    })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className={styles.placeholder}>
-        <div className={styles.logoBlock}>
-          <span className={styles.logoDot} aria-hidden="true" />
-          <div className={styles.logoText}>
-            <span className={styles.logoMark}>AgroVIA</span>
-            <span className={styles.logoSub}>FRESCO Operator</span>
-          </div>
-        </div>
-        <p className={styles.loadingText}>Inicializando pipeline 3D...</p>
-      </div>
-    ),
-  },
-);
 
 function DashboardLoading() {
   return (
     <div className={styles.dashboardLoading} role="status">
       <Loader2 size={20} className={styles.spinner} aria-hidden="true" />
-      <span>Cargando dashboard...</span>
+      <span>Cargando vista...</span>
     </div>
   );
 }
@@ -66,47 +48,101 @@ const ColdChainDashboard = dynamic(
   { ssr: false, loading: () => <DashboardLoading /> },
 );
 
-function DashboardOverlay() {
+const GraphIntelligenceView = dynamic(
+  () =>
+    import("@/components/dashboards/GraphIntelligenceView").then((m) => ({
+      default: m.GraphIntelligenceView,
+    })),
+  { ssr: false, loading: () => <DashboardLoading /> },
+);
+
+function ScrollableContent({ children }: { children: React.ReactNode }) {
+  return <div className={styles.scrollPane}>{children}</div>;
+}
+
+function ViewRouter() {
   const activeView = useUiStore((s) => s.activeView);
 
-  if (activeView === "comando") {
-    return (
-      <div className={styles.dashboardOverlay}>
-        <DashboardView />
-        <PackingDashboard />
-      </div>
-    );
+  switch (activeView) {
+    case "comando":
+      return (
+        <ScrollableContent>
+          <DashboardView />
+          <PackingDashboard />
+        </ScrollableContent>
+      );
+    case "operador":
+      return (
+        <div className={styles.operatorWrap}>
+          <OperatorChat />
+        </div>
+      );
+    case "cuentas":
+      return (
+        <EmptyView
+          title="Cuentas"
+          subtitle="Cartera de clientes, ranking de riesgo y exposición por cuenta. Próxima iteración."
+        />
+      );
+    case "calidad":
+      return (
+        <ScrollableContent>
+          <QualityDashboard />
+        </ScrollableContent>
+      );
+    case "frio":
+      return (
+        <ScrollableContent>
+          <ColdChainDashboard />
+        </ScrollableContent>
+      );
+    case "radar":
+      return (
+        <div className={styles.panelWrap}>
+          <SignalQueue />
+        </div>
+      );
+    case "social":
+      return (
+        <EmptyView
+          title="Escucha Social"
+          subtitle="Menciones, reviews y patrones de cliente en tiempo real. Próxima iteración."
+        />
+      );
+    case "grafo":
+      return <GraphIntelligenceView />;
+    case "config":
+      return (
+        <div className={styles.panelWrap}>
+          <ConfigToggles />
+        </div>
+      );
+    default:
+      return null;
   }
+}
 
-  if (activeView === "calidad") {
-    return (
-      <div className={styles.dashboardOverlay}>
-        <QualityDashboard />
-      </div>
-    );
-  }
+function DetailMount() {
+  const activeView = useUiStore((s) => s.activeView);
+  const detailPanelOpen = useUiStore((s) => s.detailPanelOpen);
+  const selectedShipmentId = useUiStore((s) => s.selectedShipmentId);
+  const closeDetail = useUiStore((s) => s.closeDetail);
 
-  if (activeView === "frio") {
-    return (
-      <div className={styles.dashboardOverlay}>
-        <ColdChainDashboard />
-      </div>
-    );
-  }
+  if (activeView === "grafo") return null;
+  if (!detailPanelOpen || !selectedShipmentId) return null;
 
-  return null;
+  return (
+    <ShipmentDetailPanel id={selectedShipmentId} onClose={closeDetail} />
+  );
 }
 
 export function HomePage() {
   return (
     <AppShell>
       <DataSourceBanner />
-      <div className={styles.canvasWrap}>
-        <PipelineCanvas />
-      </div>
-      <DashboardOverlay />
+      <ViewRouter />
+      <DetailMount />
       <MobileHero />
-      <RightPanel />
       <CinematicProvider />
     </AppShell>
   );
