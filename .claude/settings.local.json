@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp CLAUDE.md /tmp/CLAUDE.md.bak)",
+      "Bash(cp COMMS.md /tmp/COMMS.md.bak)",
+      "Read(//c/tmp/**)",
+      "Bash(npx --yes create-next-app@latest . --typescript --app --eslint --no-tailwind --no-src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(mkdir -p /tmp/agrovia-preserve)",
+      "Bash(mv CLAUDE.md COMMS.md prompts /tmp/agrovia-preserve/)",
+      "Bash(mv /tmp/agrovia-preserve/CLAUDE.md /tmp/agrovia-preserve/COMMS.md /tmp/agrovia-preserve/prompts .)",
+      "Bash(rmdir /tmp/agrovia-preserve)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(curl -sf http://localhost:3000 -o /tmp/page.html)",
+      "Read(//tmp/**)",
+      "Bash(node -e ' *)",
+      "Bash(npx vercel *)",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\\\\n\" https://agrovia.infratek.ai)",
+      "Bash(curl -sI https://agrovia.infratek.ai)",
+      "Bash(curl -vIL https://agrovia.infratek.ai)",
+      "Bash(curl -sI https://agrovia-black.vercel.app/api/health)",
+      "Bash(nslookup agrovia.infratek.ai)",
+      "Bash(nslookup agrovia.infratek.ai 8.8.8.8)",
+      "Bash(nslookup infratek.ai 8.8.8.8)",
+      "Read(//c/Users/sergi/.config/vercel/**)",
+      "Bash(curl -s \"https://api.vercel.com/v9/projects/prj_44SCzqjAUfEhGWie2NTwz3sUzX21/domains?teamId=team_4ydT8vSYW14rcRG1YkcSkFzC\" -H \"Authorization: Bearer $\\(cat ~/.config/vercel/auth.json)",
+      "Read(//c/Users/sergi/AppData/Roaming/com.vercel.cli/**)",
+      "Read(//c/Users/sergi/**)",
+      "Bash(curl -s \"https://dns.google/resolve?name=agrovia.infratek.ai&type=A\")",
+      "Bash(curl -s \"https://cloudflare-dns.com/dns-query?name=agrovia.infratek.ai&type=A\" -H \"accept: application/dns-json\")",
+      "Bash(curl -s \"https://dns.google/resolve?name=agrovia.infratek.ai.infratek.ai&type=A\")",
+      "Bash(curl -s \"https://dns.google/resolve?name=agrovia.infratek.ai&type=A&ns=ns15.domaincontrol.com\")",
+      "Bash(curl -s \"https://dns.google/resolve?name=agrovia.infratek.ai&type=ANY\")",
+      "Bash(curl -s \"https://dns.google/resolve?name=infratek.ai&type=A\")",
+      "Bash(curl -s \"https://dns.google/resolve?name=infratek.ai&type=SOA\")",
+      "Bash(curl -sI --max-time 15 https://agrovia.infratek.ai)",
+      "Bash(curl -s --max-time 15 https://agrovia.infratek.ai/api/health)",
+      "Bash(curl -s --max-time 15 https://agrovia.infratek.ai)",
+      "Bash(curl -vsI --max-time 20 https://agrovia.infratek.ai)"
+    ]
+  }
+}

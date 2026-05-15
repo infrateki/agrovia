@@ -1,0 +1,99 @@
+.hero {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px 32px;
+    gap: 20px;
+    overflow-y: auto;
+    background: radial-gradient(
+      ellipse at center top,
+      rgba(45, 139, 94, 0.08) 0%,
+      transparent 65%
+    );
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  padding-left: 18px;
+}
+
+.logoDot {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent-green-light);
+  box-shadow: 0 0 10px var(--color-accent-green-light);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg-glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border-glass);
+  min-height: 96px;
+}
+
+.cardLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.cardValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 16px 8px 0;
+  margin: auto 0 0;
+  letter-spacing: 0.02em;
+}

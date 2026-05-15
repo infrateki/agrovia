@@ -1,0 +1,191 @@
+// === Zone & View Types ===
+export type PipelineZone =
+  | 'cosecha'
+  | 'seleccion'
+  | 'packing'
+  | 'frio'
+  | 'embarque'
+  | 'transito'
+  | 'llegada';
+
+export type ViewMode = 'pipeline' | 'zone' | 'object';
+
+export type DataFlowType =
+  | 'trazabilidad'
+  | 'temperatura'
+  | 'documentos'
+  | 'senales'
+  | 'reclamos';
+
+export type BadgeVariant = 'good' | 'warn' | 'bad' | 'info';
+
+export type SignalSource = 'internal' | 'market' | 'client' | 'regulatory';
+
+export type ClaimStatus = 'open' | 'investigating' | 'resolved' | 'closed';
+
+export type DefenseItemStatus = 'ready' | 'draft' | 'missing';
+
+export type NavViewId =
+  | 'comando'
+  | 'operador'
+  | 'cuentas'
+  | 'calidad'
+  | 'frio'
+  | 'senales'
+  | 'social'
+  | 'grafo'
+  | 'config';
+
+export type Variedad = 'arandano' | 'uva' | 'palta' | 'mango' | 'citricos';
+
+export type EmbarqueStatus =
+  | 'en-camara'
+  | 'cargado'
+  | 'en-transito'
+  | 'en-puerto'
+  | 'entregado';
+
+export type ClienteSegmento = 'premium' | 'standard' | 'emergente';
+
+export type ReclamoTipo =
+  | 'calidad'
+  | 'temperatura'
+  | 'calibre'
+  | 'documentacion'
+  | 'demora';
+
+export type SenalTipo = 'riesgo' | 'mercado' | 'calidad' | 'regulatorio';
+
+// === Domain Entities ===
+export interface Lote {
+  id: string;
+  parcela: string;
+  variedad: Variedad;
+  calibre: string;
+  brix: number;
+  dryMatter: number;
+  fechaCosecha: string; // ISO date
+  riskScore: number; // 0-100
+  zone: PipelineZone;
+  embarqueId?: string;
+}
+
+export interface Embarque {
+  id: string;
+  contenedor: string;
+  naviera: string;
+  setPointTemp: number;
+  fechaZarpe: string;
+  eta: string;
+  clienteId: string;
+  loteIds: string[];
+  status: EmbarqueStatus;
+  riskScore: number;
+  currentZone: PipelineZone;
+}
+
+export interface Cliente {
+  id: string;
+  nombre: string;
+  pais: string;
+  segmento: ClienteSegmento;
+  score: number; // 0-100
+  preferencias: string[];
+  totalReclamos: number;
+  totalEmbarques: number;
+  montoReclamosUsd: number;
+}
+
+export interface Reclamo {
+  id: string;
+  embarqueId: string;
+  clienteId: string;
+  tipo: ReclamoTipo;
+  monto: number;
+  fecha: string;
+  status: ClaimStatus;
+  evidenciaUrls: string[];
+  descripcion: string;
+}
+
+export interface Temperatura {
+  id: string;
+  embarqueId: string;
+  timestamp: string;
+  valor: number;
+  sensorId: string;
+  zona: PipelineZone;
+}
+
+export interface Senal {
+  id: string;
+  tipo: SenalTipo;
+  fuente: SignalSource;
+  score: number; // 0-100
+  titulo: string;
+  descripcion: string;
+  accion: string;
+  fecha: string;
+}
+
+// === UI Data Types ===
+export interface KpiData {
+  id: string;
+  label: string;
+  value: string;
+  badge: string;
+  badgeVariant: BadgeVariant;
+  icon: string; // Lucide icon name
+}
+
+export interface ClaimDefenseItem {
+  id: string;
+  nombre: string;
+  fuente: string;
+  status: DefenseItemStatus;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'bot';
+  text: string;
+  timestamp: string;
+}
+
+// === 3D Types ===
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface Size3 {
+  w: number;
+  h: number;
+  d: number;
+}
+
+export interface ZoneConfig {
+  id: PipelineZone;
+  label: string; // Spanish display name
+  description: string; // Spanish description
+  position: Vec3;
+  size: Size3;
+  color: string; // hex
+  accentColor: string; // hex for lighting
+}
+
+export interface LayerVisibility {
+  flow: boolean;
+  temperatura: boolean;
+  riesgo: boolean;
+  documentos: boolean;
+  senales: boolean;
+  grafo: boolean;
+}
+
+export interface NavItem {
+  id: NavViewId;
+  label: string;
+  iconName: string;
+}

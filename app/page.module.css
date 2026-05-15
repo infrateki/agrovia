@@ -1,0 +1,67 @@
+.canvasWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(45, 139, 94, 0.06) 0%,
+    transparent 60%
+  );
+}
+
+.logoBlock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-accent-green-light);
+  box-shadow: 0 0 16px var(--color-accent-green-light);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logoMark {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-green-light);
+}
+
+.logoSub {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.loadingText {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .canvasWrap {
+    display: none;
+  }
+}
