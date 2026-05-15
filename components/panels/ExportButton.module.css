@@ -1,0 +1,40 @@
+.btn,
+.btnCompact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-bg-glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.btn {
+  padding: 6px 12px;
+}
+
+.btnCompact {
+  padding: 5px 8px;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  justify-content: center;
+}
+
+.btn:hover,
+.btnCompact:hover {
+  color: var(--color-accent-green-light);
+  border-color: rgba(45, 139, 94, 0.5);
+  background: rgba(45, 139, 94, 0.08);
+}
+
+.btn svg,
+.btnCompact svg {
+  color: var(--color-accent-green-light);
+}

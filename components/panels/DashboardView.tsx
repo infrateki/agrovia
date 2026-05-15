@@ -9,12 +9,29 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { MessageSquareText, Radar, Send, TrendingUp } from 'lucide-react';
+import {
+  AlertTriangle,
+  ChevronRight,
+  Clock,
+  ListChecks,
+  MessageSquareText,
+  Radar,
+  Send,
+  TrendingUp,
+} from 'lucide-react';
 import { usePipelineStore } from '@/lib/stores/pipeline-store';
-import type { Senal } from '@/lib/types';
+import { useSelectionStore } from '@/lib/stores/selection-store';
+import { useUiStore } from '@/lib/stores/ui-store';
+import { mockDecisiones } from '@/lib/data/mock-decisiones';
+import { findFichaById } from '@/lib/data/mock-fichas';
+import type { DecisionPendiente, Embarque, Senal } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import { KpiCards } from './KpiCards';
+import { DataSourceBadge } from './DataSourceBadge';
 import styles from './DashboardView.module.css';
+
+const HIGH_RISK_THRESHOLD = 80;
+const FROZEN_DASHBOARD_TIMESTAMP = '2026-05-15T08:30:00Z';
 
 const CHART_DATA = [
   { mes: 'Dic', riesgo: 38, calidad: 74 },
@@ -29,6 +46,23 @@ function scoreColor(score: number): string {
   if (score >= 80) return 'var(--color-alert-red)';
   if (score >= 65) return 'var(--color-alert-amber)';
   return 'var(--color-cold-blue)';
+}
+
+function urgencyClass(urgencia: DecisionPendiente['urgencia']): string {
+  if (urgencia === 'alta') return styles['urg-alta'] ?? '';
+  if (urgencia === 'media') return styles['urg-media'] ?? '';
+  return styles['urg-baja'] ?? '';
+}
+
+function shortDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString('es-PE', {
+      day: '2-digit',
+      month: 'short',
+    });
+  } catch {
+    return '—';
+  }
 }
 
 interface TooltipPayload {
@@ -57,9 +91,77 @@ function ChartTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
+interface AlertaPrioritariaProps {
+  embarque: Embarque;
+  onOpen: () => void;
+}
+
+function AlertaPrioritaria({ embarque, onOpen }: AlertaPrioritariaProps) {
+  return (
+    <div className={styles.alertBanner} role="alert">
+      <span className={styles.alertIcon}>
+        <AlertTriangle size={18} />
+      </span>
+      <div className={styles.alertText}>
+        <div className={styles.alertTitle}>
+          {embarque.id} · Arándanos a EE.UU. — Riesgo convergente detectado
+        </div>
+        <div className={styles.alertSub}>
+          Excursión térmica + historial de reclamos del cliente. Acción comercial
+          requerida antes del arribo.
+        </div>
+      </div>
+      <button
+        type="button"
+        className={styles.alertBtn}
+        onClick={onOpen}
+      >
+        Ver ficha
+        <ChevronRight size={14} />
+      </button>
+    </div>
+  );
+}
+
+interface DecisionRowProps {
+  decision: DecisionPendiente;
+  onOpen: (fichaId: string) => void;
+}
+
+function DecisionRow({ decision, onOpen }: DecisionRowProps) {
+  return (
+    <div className={`${styles.decisionRow} ${urgencyClass(decision.urgencia)}`}>
+      <span className={styles.urgencyDot} aria-hidden="true" />
+      <div className={styles.decisionBody}>
+        <div className={styles.decisionDesc}>{decision.descripcion}</div>
+        <div className={styles.decisionMeta}>
+          <span>{decision.responsable}</span>
+          <span className={styles.metaSep}>·</span>
+          <span className={styles.deadline}>
+            <Clock size={11} /> {shortDate(decision.deadline)}
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        className={styles.decisionBtn}
+        onClick={() => onOpen(decision.fichaId)}
+      >
+        Abrir ficha
+        <ChevronRight size={12} />
+      </button>
+    </div>
+  );
+}
+
 export function DashboardView() {
   const senales = usePipelineStore((s) => s.senales);
   const chatMessages = usePipelineStore((s) => s.chatMessages);
+  const embarques = usePipelineStore((s) => s.embarques);
+
+  const setSelectedZone = useSelectionStore((s) => s.setSelectedZone);
+  const setSelectedObjectId = useSelectionStore((s) => s.setSelectedObjectId);
+  const setRightPanelOpen = useUiStore((s) => s.setRightPanelOpen);
 
   const topSignals = useMemo<Senal[]>(
     () => [...senales].sort((a, b) => b.score - a.score).slice(0, 3),
@@ -68,6 +170,36 @@ export function DashboardView() {
 
   const lastTwo = chatMessages.slice(-2);
 
+  const priorityEmbarque = useMemo<Embarque | undefined>(
+    () =>
+      [...embarques]
+        .filter((e) => e.riskScore >= HIGH_RISK_THRESHOLD)
+        .sort((a, b) => b.riskScore - a.riskScore)[0],
+    [embarques],
+  );
+
+  const openFicha = (fichaId: string) => {
+    const ficha = findFichaById(fichaId);
+    if (!ficha) return;
+    if (ficha.targetType === 'embarque') {
+      setSelectedObjectId(ficha.targetId);
+      setSelectedZone(ficha.zona);
+    } else {
+      setSelectedObjectId(null);
+      setSelectedZone(ficha.zona);
+    }
+    setRightPanelOpen(true);
+  };
+
+  const openPriorityFicha = () => {
+    if (!priorityEmbarque) return;
+    setSelectedObjectId(priorityEmbarque.id);
+    setSelectedZone(priorityEmbarque.currentZone);
+    setRightPanelOpen(true);
+  };
+
+  const topDecisions = mockDecisiones.slice(0, 3);
+
   return (
     <div className={styles.view}>
       <h2 className={styles.title}>Centro de Comando</h2>
@@ -75,8 +207,37 @@ export function DashboardView() {
         Estado en vivo del pipeline FRESCO — indicadores ejecutivos, señales prioritarias y operador IA.
       </p>
 
+      {priorityEmbarque ? (
+        <AlertaPrioritaria
+          embarque={priorityEmbarque}
+          onOpen={openPriorityFicha}
+        />
+      ) : null}
+
       <div className={styles.section}>
         <KpiCards />
+      </div>
+
+      <div className={`${styles.section} ${styles.decisionsCard}`}>
+        <Card>
+          <div className={styles.decisionsHeader}>
+            <span className={styles.decisionsTitle}>
+              <ListChecks size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
+              Decisiones pendientes
+            </span>
+            <DataSourceBadge
+              source="Operador FRESCO"
+              timestamp={FROZEN_DASHBOARD_TIMESTAMP}
+              confidence="medium"
+              isMock
+            />
+          </div>
+          <div className={styles.decisionsList}>
+            {topDecisions.map((d) => (
+              <DecisionRow key={d.id} decision={d} onOpen={openFicha} />
+            ))}
+          </div>
+        </Card>
       </div>
 
       <div className={`${styles.section} ${styles.middleRow}`}>
@@ -144,6 +305,14 @@ export function DashboardView() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          <div className={styles.chartFooter}>
+            <DataSourceBadge
+              source="Modelo riesgo FRESCO"
+              timestamp={FROZEN_DASHBOARD_TIMESTAMP}
+              confidence="medium"
+              isMock
+            />
+          </div>
         </Card>
 
         <Card className={styles.signalCard}>
@@ -166,6 +335,14 @@ export function DashboardView() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className={styles.signalFooter}>
+            <DataSourceBadge
+              source="Radar de Señales"
+              timestamp={FROZEN_DASHBOARD_TIMESTAMP}
+              confidence="high"
+              isMock
+            />
           </div>
         </Card>
       </div>

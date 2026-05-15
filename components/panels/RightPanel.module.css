@@ -39,6 +39,19 @@
   font-weight: 600;
   color: var(--color-text-primary);
   min-width: 0;
+  flex: 1;
+}
+
+.headerTitleText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border-glass);
+  margin: 4px 0;
 }
 
 .eyebrow {

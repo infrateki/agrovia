@@ -11,10 +11,10 @@ export function MobileHero() {
     <div className={styles.hero}>
       <div className={styles.header}>
         <span className={styles.logoDot} aria-hidden="true" />
-        <h1 className={styles.title}>FRESCO BI Móvil</h1>
+        <h1 className={styles.title}>AgroVIA Móvil</h1>
         <p className={styles.subtitle}>
           Cockpit ejecutivo para riesgo postcosecha, reclamos e inteligencia
-          comercial
+          comercial con operador IA
         </p>
       </div>
 

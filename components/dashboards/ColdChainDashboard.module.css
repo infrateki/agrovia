@@ -1,0 +1,265 @@
+/* === Section blocks (full-width in DashboardShell grid) === */
+.section {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionInner {
+  padding: 16px;
+  background: var(--color-bg-glass);
+  border: 1px solid var(--color-border-glass);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+}
+
+/* === Gauges row === */
+.gaugesRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px;
+  background: var(--color-bg-glass);
+  border: 1px solid var(--color-border-glass);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+}
+
+.gaugesRow > * {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .gaugesRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gaugesRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Stat cards row === */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1280px) {
+  .statsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Hero chart === */
+.heroChart {
+  height: 320px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.tooltip {
+  background: rgba(13, 17, 23, 0.95);
+  border: 1px solid var(--color-border-glass);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--color-text-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+}
+
+.tooltipTime {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+
+.tooltipLabel {
+  flex: 1;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.tooltipValue {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--color-text-primary);
+}
+
+/* === Legend === */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 8px 4px 0;
+  border-top: 1px solid var(--color-border-glass);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+/* === Cell renderers === */
+.deltaGreen {
+  color: var(--color-accent-green-light);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaAmber {
+  color: var(--color-alert-amber);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaRed {
+  color: var(--color-alert-red);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tempCell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.varietyBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+}
+
+.palletCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 110px;
+}
+
+.palletText {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.palletGauge {
+  flex: 1;
+  min-width: 50px;
+}
+
+.humidityCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 90px;
+}
+
+.humidityText {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.criticalRow td:first-child {
+  border-left: 3px solid var(--color-alert-red);
+}
+
+.alertasBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--color-alert-red) 22%, transparent);
+  color: var(--color-alert-red);
+  border: 1px solid color-mix(in srgb, var(--color-alert-red) 40%, transparent);
+}
+
+.alertasZero {
+  display: inline-block;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.impactoSevero {
+  background: color-mix(in srgb, var(--color-alert-red) 22%, transparent);
+  color: var(--color-alert-red);
+  border: 1px solid color-mix(in srgb, var(--color-alert-red) 40%, transparent);
+}
+
+.impactoModerado {
+  background: color-mix(in srgb, var(--color-alert-amber) 22%, transparent);
+  color: var(--color-alert-amber);
+  border: 1px solid color-mix(in srgb, var(--color-alert-amber) 40%, transparent);
+}
+
+.impactoLeve {
+  background: color-mix(in srgb, var(--color-cold-blue) 22%, transparent);
+  color: var(--color-cold-blue);
+  border: 1px solid color-mix(in srgb, var(--color-cold-blue) 40%, transparent);
+}
+
+.tempMaxRed {
+  color: var(--color-alert-red);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -60,8 +60,78 @@
   animation: pulse 1.6s ease-in-out infinite;
 }
 
+.dashboardOverlay {
+  position: absolute;
+  top: var(--topbar-height);
+  left: 0;
+  right: 0;
+  bottom: var(--bottom-bar-height);
+  background: rgba(10, 14, 20, 0.93);
+  overflow-y: auto;
+  z-index: 10;
+  animation: dashFadeIn 0.3s ease;
+}
+
+.dashboardOverlay::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboardOverlay::-webkit-scrollbar-track {
+  background: rgba(13, 17, 23, 0.6);
+}
+
+.dashboardOverlay::-webkit-scrollbar-thumb {
+  background: rgba(45, 139, 94, 0.45);
+  border-radius: 4px;
+}
+
+.dashboardOverlay::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-green-light);
+}
+
+.dashboardOverlay {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(45, 139, 94, 0.45) rgba(13, 17, 23, 0.6);
+}
+
+.dashboardLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 64px 16px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.spinner {
+  animation: dashSpin 1s linear infinite;
+  color: var(--color-accent-green-light);
+}
+
+@keyframes dashFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dashSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .canvasWrap {
     display: none;
+  }
+
+  .dashboardOverlay {
+    top: var(--topbar-height);
+    bottom: 0;
   }
 }

@@ -1,8 +1,8 @@
 # COMMS.md — Terminal Orchestration Board
 ## FRESCO 3D Pipeline Intelligence
 
-**Last updated:** 2026-05-14 · by T5
-**Status:** 🟢 DEPLOYED (custom domain DNS pending)
+**Last updated:** 2026-05-15 · by T5 (Phase 3 — Integration & Deploy)
+**Status:** 🟢 DEPLOYED v3 (agrovia.infratek.ai) · Phase 3 operational dashboards live (Packing / Calidad / Cadena de Frío)
 **Repo:** https://github.com/infrateki/agrovia.git
 **Deploy:** agrovia.infratek.ai (Vercel)
 
@@ -24,10 +24,20 @@ Each Claude Code terminal MUST:
 | Component | Terminal | Status | Last Update | Notes |
 |---|---|---|---|---|
 | Foundation & Layout | T1 | ✅ DONE | 2026-05-14 17:25 | App shell, design system, sidebar, bottom bar |
+| 3D Ultra-Detail (Phase 2) | T1 | ✅ DONE | 2026-05-15 | All 7 zones upgraded to 40-60 mesh richness; SceneManager hemisphere+dust |
+| Live Claude Operator (Phase 2) | T3 | ✅ DONE | 2026-05-15 | /api/chat SSE → text streaming, system prompt grounded in mock data, demo fallback, brief + defense generators, quick-asks |
 | Data Layer & Stores | T2 | ✅ DONE | 2026-05-14 18:05 | Types, mock data, Zustand stores, constants — tsc + build green |
+| Decision Intelligence Layer (Phase 2) | T2 | ✅ DONE | 2026-05-15 | FichaOperativa + TrazabilidadTimeline + TemperaturaCurve + DataSourceBadge + CausaAccionCard + ImpactoEconomico; RightPanel/KpiCards/DashboardView upgraded; mock-fichas + mock-decisiones; tsc + build green |
 | 3D Pipeline Engine | T3 | ✅ DONE | 2026-05-14 | 7 zones, camera (4 modes + GSAP), particles, shaders, raycaster selection, CSS2D labels |
 | Features UI | T4 | ✅ DONE | 2026-05-14 | Dashboard, chat, signals, claims, right panel, config toggles, graph placeholder |
+| Cinematic Story Mode (Phase 2) | T4 | ✅ DONE | 2026-05-15 | 5-scene 90s guided demo, Presentation Mode, teleprompter, FAB, URL params |
 | Deploy & Polish | T5 | ✅ DONE | 2026-05-14 | Vercel deployed, mobile responsive, cinematic mode, integration green |
+| Integration & Import (Phase 2) | T5 | ✅ DONE | 2026-05-15 | CinematicProvider wired, CSV import (/import), PDF/HTML export route, AgroVIA naming, DataSourceBanner, v2 deployed → agrovia.infratek.ai |
+| Widget Library & Dashboard Routing (Phase 3) | T1 | ✅ DONE | 2026-05-15 | 9-widget library (CircularGauge/StatCard/DataTable/TrendSparkline/AlertBanner/MiniGauge/VarietySelector/SectionHeader/DashboardShell), Phase-3 types, page.tsx dashboard overlay routing for comando/calidad/frio activeViews — tsc + build green |
+| Quality Control Dashboard (Phase 3) | T3 | ✅ DONE | 2026-05-15 | Full QualityDashboard: VarietySelector filters everything · 4 dynamic CircularGauges per variety (Palta→Materia Seca, Cítricos→Acidez) · 6 StatCards · Calibre BarChart + Defectos PieChart · Brix & Firmeza/Acidez 7-day LineCharts with ReferenceArea optimal bands · 12-row searchable Inspecciones DataTable with variety-color chips + MiniGauge cells · Benchmarks reference table (5 varieties, SENASA/APHIS specs). mock-quality.ts (gauge configs + stats + 12 QC inspecciones + 5 benchmarks + 7d trends + calibre/defect distributions). tsc clean, npm run build ✅ green. |
+| Cold Chain Dashboard (Phase 3) | T4 | ✅ DONE | 2026-05-15 | Full ColdChainDashboard: critical AlertBanner (S-8842), 4 CircularGauges, 6 StatCards, hero 24h Recharts LineChart (6 chambers, green band [−1,+1], red threshold +4°C, CF-04 palta drift visible in last 4h, CF-06 pre-cool exponential curve), Cámaras DataTable (click → 3D zone frio), Embarques tránsito DataTable (click → zone transito), Excursion history DataTable. mock-coldchain.ts (48-pt temp curve generator + 6 cámaras + 8 embarques + 5 excursions). tsc clean for own files (only pre-existing T3 QualityDashboard error remains), npm run build ✅ green. |
+| Integration & Deploy v3 (Phase 3) | T5 | ✅ DONE | 2026-05-15 | tsc + build green; v3 deployed to agrovia.infratek.ai with PackingDashboard / QualityDashboard / ColdChainDashboard overlays wired through activeView routing |
+| Packing Operations Dashboard (Phase 3) | T2 | ✅ DONE | 2026-05-15 | Full PackingDashboard: warning AlertBanner (Línea 2 detenida — cambio uva→arándano, 25 min ETA), 4 CircularGauges (Cajas/h 487 vs 500, Rendimiento 87.3% vs 90, Velocidad 12.5 m/min vs 14, Descarte 8.2% vs 5), 6 StatCards (Cajas Hoy 3,847 +12% w/sparkline, Kg Procesados 12,450, Kg Empacados 10,840, Líneas Activas 3 de 4, Turno Día 06:00-18:00, Eficiencia Turno 91.5% w/sparkline), Recharts BarChart 8h producción con ReferenceLine meta=500 + Cells coloreados por % meta + footer "ayer 3,200 cajas +20.2%", DataTable líneas (4 filas, custom mini-gauges cajas/h y rendimiento, marca lateral roja para detenida, badges variedad/turno/estado), DataTable lotes (8 filas, click loteId o row → useSelectionStore.setSelectedObjectId, mini-gauges rendimiento + descarte invertido, lista de defectos). NEW: components/dashboards/PackingDashboard.{tsx,module.css}, lib/data/mock-packing.ts (MOCK_PACKING_LINES + MOCK_PACKING_LOTES + MOCK_HOURLY_PRODUCTION + HourlyProduction). lib/data/index.ts: añadidos 3 exports + 1 type export. tsc clean, npm run build ✅ green. NOTA técnica: CircularGauge.colorZones interpreta cutoffs en orden ascendente (chequea green[1] primero); invertZones=true hace que greenStop=red y redStop=green. Para "alto=bueno" (Cajas/h, Rendimiento, Velocidad) usamos invertZones=true con bandas { green:[0,low], amber:[low,mid], red:[mid,100] }. Descarte sin invertZones porque la lógica default ya da verde a valores bajos. |
 
 ---
 
@@ -178,10 +188,218 @@ SHARED (coordinate writes via COMMS.md):
 2026-05-14 17:25 — div#pipeline-canvas ready for T3. All CSS custom properties defined. All deps installed.
 2026-05-14 17:25 — P1, P2, P3 ✅ DONE.
 
+— — — — — PHASE 2: 3D ULTRA-DETAIL — — — — —
+
+2026-05-15 — Phase 2 START: re-claimed components/three/zones/* + SceneManager.ts (cross-T1/T3 ownership transfer for this batch, see "FILES MODIFIED OUTSIDE OWNERSHIP" below). Goal: 40-60 mesh detail per zone with environmental effects, ambient particles, and per-frame animations.
+2026-05-15 — All 7 zones rewritten + SceneManager extended. tsc --noEmit clean. npm run build green (Next 16.2.6 Turbopack, /, /_not-found, /api/health). npm run lint reports 0 errors / 3 pre-existing-style _delta warnings (Embarque/Llegada/Packing — convention prefix, intentionally unchanged).
+
+MESH COUNT PER ZONE (THREE.Object3D additions; InstancedMesh = 1 draw, but visual instances expand to many):
+
+  ZoneCosecha — ~61 meshes (1 terrain + 3 path segs + 4 fruit trees [trunk+canopy+18-berry InstancedMesh×3 = 12] + 4 palms [trunk+4 fronds×4 = 20] + 3 bushes×2 [bush+InstancedMesh = 6] + 4 bins + 1 overflow InstancedMesh + 3 workers×4 parts = 12 + 1 leaf InstancedMesh + 1 pollen Points). Visual instances ≈280 (72 tree berries + 48 bush berries + 40 overflow + 28 leaves + 40 pollen + base meshes).
+  ZoneSeleccion — ~51 meshes (floor, belt, 8-roller InstancedMesh, 2 rails, 3 stations×5 parts = 15, reject bin + InstancedMesh of 24 berries, frame edges, 4 lights×2, camera pole+head+LED, U-rail×3, 10-floor-berry InstancedMesh, 14-fruit-on-belt InstancedMesh — animated). Visual instances ≈110.
+  ZonePacking — ~62 meshes (floor, 2 lines×[conv+5 rollers+scale+display+closer = 9] = 18, 16-open + 16-closed clamshell InstancedMesh + 64-inside-berry InstancedMesh, label printer body+label, 3 pallets+stacks [pallet + 36-box InstancedMesh] = 6, shrink-wrap, QC desk+clip+lens+handle, 3 workers×2 parts = 6, 3 fluorescent tubes). Visual instances ≈210 (96 master boxes + 32 clamshells + 64 inside berries + base meshes).
+  ZoneFrio — ~67 meshes FLAGSHIP (floor, glass walls + edges, 9 pallets×[pallet + 4-box InstancedMesh] = 18, 4 corner sensors, evaporator + 2 fan rings + 1 spinning blade + 2 ceiling pipes, digital readout w/ CanvasTexture, forklift body+mast+2 forks+4 wheels = 8, 20 ice crystals on glass [pulsing], thermometer body+mercury, "ZONA DE FRÍO" sign w/ CanvasTexture, 5 strip-curtain panels [swaying], emergency button base+button, frost Points 80 + mist Points 30). Visual instances ≈230 (36 box instances + 80 frost + 30 mist + base).
+  ZoneEmbarque — ~63 meshes (concrete dock, 12 yellow safety strips, corrugated container [vertex-displaced], "MSCU-7842190" stencil w/ CanvasTexture, 2 doors + 2 handles, reefer + grille + status light [pulsing], ramp, 4 inside pallets×2 + 2 dock pallets×2 = 12, forklift body + 4 wheels + 2 forks + carried pallet, paperwork desk + 3 papers + stamp + pen, 4 clipboards, overhead I-beam ×2 [3 parts each = 6]). Visual instances ≈80.
+  ZoneTransito — ~58 meshes (animated 30×30 ocean [multi-freq waves + recompute normals/frame], horizon, tapered hull, deck, bridge base+top+windows, mast+antenna, 2 container InstancedMeshes [10 visual containers], 2 deck rails, data logger, GPS core + 3 expanding TorusGeometry rings [animated], satellite body + 2 solar panels + spinning rotor, 15-data-stream Points ship→satellite, 8-cloud Points, 2 wake triangles, route TubeGeometry [CatmullRomCurve3], 3 buoys×3 parts + blinking light = 9). Visual instances ≈110.
+  ZoneLlegada — ~67 meshes (port dock, 4 bollards, 3 mooring ropes, container crane [2 towers + boom + trolley + 2 cables + spreader = 7], customs booth+window+roof, inspector body+head+clipboard, opened container [vertex-corrugated] + 2 doors, dock forklift body+4 wheels, retail shelf back+3 shelf levels = 4, 18-product-clamshell InstancedMesh, 3 price tags, customer body+head, shopping cart wireframe edges + 4 wheels, "LLEGADA · DESTINO" sign w/ CanvasTexture, floating bobbing "RECLAMO" clipboard w/ CanvasTexture). Visual instances ≈90.
+
+SCENE-WIDE ADDITIONS (SceneManager.ts):
+  — HemisphereLight(skyColor 0x8899AA, groundColor 0x1A1A2E, intensity 0.15) — softens shadow side of geometry naturally.
+  — Global ambient dust mote system: 100-Point system drifting +X across all 7 zones, very subtle (size 0.05, opacity 0.15, additive-friendly), per-frame X drift + Y bob.
+  — Connector dashed lines between adjacent zones now pulse opacity (0.45 + 0.15·sin(t·1.4)). NOTE: LineDashedMaterial does not expose a runtime dashOffset uniform in three r0.184; opacity pulse is the closest "moving dash" effect achievable without forking the material — flagged for a future custom ShaderMaterial replacement if a real moving-dash is required.
+
+PER-FRAME ANIMATIONS (added in update() of each zone):
+  Cosecha: pollen drift + sunlight/warm-glow flicker.
+  Seleccion: belt UV map shift + screen pulse + 14 fruit-on-belt repositioned along belt path each frame.
+  Packing: scale-display green pulse.
+  Frio: dual frost/mist particle drift, cold-light pulse, spinning evaporator blade, 20 ice-crystal sparkle pulses, 5 curtain strips swaying ±0.08rad.
+  Embarque: reefer status-light pulse.
+  Transito: ocean multi-frequency waves (vertex displacement + computeVertexNormals each frame), 3 GPS rings expanding+fading, blinking buoy lights, ship→satellite data stream particles, cloud drift, wake opacity pulse, satellite rotor spin.
+  Llegada: floating "RECLAMO" clipboard bob + sway.
+
+PERFORMANCE:
+  — Heavy InstancedMesh use throughout (berries, leaves, pallet boxes 36/pallet × 3 pallets, container stacks, retail products, sorting line clamshells, inside-berries, fruit-on-belt, ice crystals are individual planes for sparkle independence).
+  — All SphereGeometry ≤ 12 segments (most 6-8); CylinderGeometry 5-12 segments.
+  — CanvasTextures (Frio display + Frio sign + Embarque MSCU stencil + Llegada sign + Llegada RECLAMO clipboard) created once in ctor, disposed in dispose(). SSR-safe via `typeof document !== 'undefined'` guard.
+  — Heaviest zone: ZoneFrio (~230 visible items including 80 frost + 30 mist + 20 ice + 36 pallet boxes). Lightest: ZoneTransito for ground meshes (most magic is in particles + animated ocean).
+  — Risk-glow sweep & highlight sweep iterate ~15-25 registered materials per zone (NOT every detail) — emissive-by-default materials (LEDs, screens, sensors, status lights, displays, reefer light, GPS core, satellite windows, fluorescent tubes, mercury, button, route tube, data logger) are intentionally NOT registered so they keep glowing through highlight off-state.
+  — Estimated total triangle count well under the 50k budget (low-segment primitives + heavy reuse via InstancedMesh).
+
+DOWNSTREAM IMPACT:
+  — All zones still extend THREE.Group with the original public surface: constructor(config), update(delta), setHighlight(active), setRiskLevel(level), getBoundingBox(), dispose(). Zero changes needed in PipelineCanvas, SelectionSystem, LabelSystem, CameraSystem, RiskGlow, CinematicMode.
+  — userData.objectId still set on the salient meshes per zone, so SelectionSystem raycast → selectedObjectId continues to resolve to meaningful labels (e.g. `frio:pallet-1-2`, `embarque:container`, `transito:satellite`, `llegada:claim-icon`).
+  — Label positions (zone.position.y + size.h + 2) unchanged — label heights still align with the new richer geometry.
+
+FILES MODIFIED OUTSIDE T1 PHASE-1 OWNERSHIP (re-claimed for Phase 2 per orchestrator brief):
+  — components/three/zones/ZoneCosecha.ts (was T3)
+  — components/three/zones/ZoneSeleccion.ts (was T3)
+  — components/three/zones/ZonePacking.ts (was T3)
+  — components/three/zones/ZoneFrio.ts (was T3)
+  — components/three/zones/ZoneEmbarque.ts (was T3)
+  — components/three/zones/ZoneTransito.ts (was T3)
+  — components/three/zones/ZoneLlegada.ts (was T3)
+  — components/three/SceneManager.ts (was T3) — additive only: kept all original ground/grid/lights/zones/connectors logic, added hemisphere light, dust Points system, dashed-line opacity pulse + new dispose paths.
+
+NOT TOUCHED (per Phase 2 brief):
+  — components/three/PipelineCanvas.{tsx,module.css}
+  — components/three/systems/* (CameraSystem, ParticleFlow, RiskGlow, SelectionSystem, LabelSystem, CinematicMode)
+  — components/three/shaders/* (glassShader, temperatureHeatmap, riskGlow, particleFlow)
+  — components/three/zones/index.ts (no signature changes needed)
+  — lib/three-utils.ts (existing disposeObject still walks the new mesh trees correctly)
+  — All T2/T4/T5 files.
+
+NOTE for T5 / future perf passes:
+  — ZoneTransito.update() recomputes ocean vertex normals every frame across 31×31 = 961 vertices. If frame budget tightens later (heavy mobile or LOD pass), this is the first place to throttle (e.g. recompute normals every 2nd frame, or use a derivative-based normal hack in a custom shader).
+  — Some zones spin meshes (Frio fan blade, Transito satellite rotor) and animate Float32Array buffers (Cosecha pollen, Frio frost+mist, Transito clouds+stream). Counts deliberately kept below 100 per system to stay smooth on mid-range laptops.
+
+2026-05-15 — Phase 2 ✅ DONE.
+
+— — — — — PHASE 2 MATERIAL POLISH — — — — —
+
+2026-05-15 — Phase 2 material polish complete — PBR metals, gradient sky, rim lighting.
+
+2026-05-15 — Photoreal final polish (Sergio request "too dark, add real lighting"). Touched PipelineCanvas (T3-owned) + SceneManager (T1) per direct user authorization in this session.
+
+PipelineCanvas.tsx:
+  • Added IBL via PMREM RoomEnvironment: `pmremGenerator.fromScene(roomEnv, 0.04).texture` → `scene.environment`. environmentIntensity 0.55 to keep the dark cockpit mood. Every PBR material with metalness > 0 now picks up real reflections; matte materials get free ambient fill so the scene reads as "lit room" instead of "void".
+  • renderer.toneMappingExposure 1.0 → 1.3 (ACES already on; just brighter).
+  • renderer.shadowMap.type PCFSoftShadowMap → VSMShadowMap (PCFSoft deprecated in r0.184; VSM is softer + non-deprecated). Added shadow.bias -0.0004, shadow.normalBias 0.04, shadow.radius 4 for soft contact shadows.
+  • Added EffectComposer pipeline: HalfFloatType + LinearSRGB render target (preserves >1.0 luminance for bloom), 4× MSAA, RenderPass → UnrealBloomPass (strength 0.55, radius 0.45, threshold 0.78 — tuned so only the always-emissive sources lift) → OutputPass (handles tone mapping + sRGB conversion). composer.render(delta) replaces renderer.render(...). Composer + bloomPass resize wired into handleResize. Cleanup: composer.dispose(), pmremGenerator.dispose(), envMap.dispose() added to teardown.
+  • CSS2DRenderer label pass still runs after composer (DOM overlay on top of WebGL canvas).
+
+SceneManager.ts:
+  • Lighting rebalanced for IBL workflow (env map carries ambient, key + rim do directional shaping):
+    - AmbientLight 0.20 → 0.18 (env map covers it).
+    - HemisphereLight intensity 0.15 → 0.35, sky color 0x8899AA → 0x9AAECC (slightly brighter cool fill).
+    - Directional key light 0xFFFFFF @ 0.8 → 0xFFF0D8 @ 1.9 (warm low industrial sun, ~2.4× brighter).
+    - Rim DirectionalLight 0x4488FF intensity 0.15 → 0.55 (real silhouette separator now).
+    - Key light position bumped slightly (22,32,18) for cleaner shadow direction.
+
+Selective bloom note: the threshold 0.78 + emissiveIntensity values already in the zones (LEDs 0.5-1.5, screens/displays 0.4-0.9, GPS core 1.6, sensors 0.9, signs 0.25-0.4, route tube 0.55, mercury 0.5, status lights 1.2, fluorescent tubes 0.9) means LEDs + GPS core + sensors + status lights + reefer light hit threshold and bloom strongly; signs/screens/displays sit just under so they have a gentle halo without blowing out. CONFIG layer toggles (Particle Flow) are AdditiveBlending Points and contribute too.
+
+Verification:
+  • npx tsc --noEmit ✅ clean.
+  • npm run build ✅ green (Next 16.2.6, 4 routes).
+  • Browser runtime via dev log: PipelineCanvas mounts, renderer.info reports 721 draw calls / 215 geometries / 12 textures / 54,726 triangles. Triangle count UNCHANGED from prior polish (PMREM RoomEnvironment renders once at init, then env scene is GC'd). Geometry count +14 / texture count +3 reflect the PMREM cubemap + bloom blur targets. PCFSoftShadowMap deprecation warning gone (switched to VSM). One pre-existing THREE.Clock deprecation remains (line 163 of PipelineCanvas — pre-Phase-2 T3 code, not in this polish's scope). One PMREMGenerator HLSL precision warning (X4122) on Windows DirectX driver — cosmetic, harmless.
+
+Imports added to PipelineCanvas (all from three/addons, no new npm install needed):
+  RoomEnvironment, EffectComposer, RenderPass, UnrealBloomPass, OutputPass.
+
+2026-05-15 — Floor + bloom hotfix (Sergio screenshot showed runaway bloom halo + flat floating-zones look).
+  • PipelineCanvas bloom retuned: strength 0.55 → 0.4, radius 0.45 → 0.22, threshold 0.78 → 1.05. With the HDR HalfFloat target, only true emissives >1.0 luminance (LEDs, GPS core, sensors, status lights, route tube) bloom now. Screens / displays / signs / fluorescents sit just under so they have a soft halo without smearing the whole sky.
+  • SceneManager floor rebuilt as TWO stacked planes:
+    1. Polished-concrete base — MeshPhysicalMaterial #0A1018, roughness 0.5, metalness 0.35, envMapIntensity 0.65, clearcoat 0.5, clearcoatRoughness 0.35. Picks up IBL reflections (sky gradient + zone PointLights) + still receives VSM shadows so zones land convincingly.
+    2. Emissive tech grid — custom ShaderMaterial above the base (y=-0.495, renderOrder 1, transparent + depthWrite false). Anti-aliased grid via fwidth(): minor lines every 1u (cool steel #3A5870, alpha 0.40), major lines every 10u matching zone spacing (accent green #2D8B5E, alpha 0.85). Radial fade smoothstep(22, 60, dist) so distant grid breathes into fog instead of revealing the plane edge. The transparency lets the polished-concrete reflections show through everywhere except the bright lines themselves.
+  • GridHelper removed (replaced by the shader grid). gridHelper field renamed to gridMesh, dispose updated.
+  • Result: floor reads as "wet polished tron grid" rather than a black slab; zones cast actual shadows onto reflective ground, no longer visually floating; bloom kept tight to genuine emissives.
+
+SceneManager.ts changes:
+  • Replaced solid black scene.background with a gradient sky-dome ShaderMaterial inside-out SphereGeometry(200, 32, 32). Three-color stop (top #0D1B2A → horizon #162030 → bottom #1B2838), exponent 0.4. Side: BackSide, depthWrite: false. Disposed in dispose().
+  • Fog: FogExp2(0x0A0E14, 0.008) → FogExp2(0x0D1B2A, 0.005) — matches sky horizon color and reveals more depth at distance.
+  • Ground plane: color #0A0E14 → #0F1923, roughness 0.95 → 0.85, metalness 0.05 → 0.15, added envMapIntensity 0.3 (subtle reflective industrial floor).
+  • Grid helper: opacity 0.35 → 0.2, both colors unified to 0x1A2530 (subtler).
+  • Added rim DirectionalLight(0x4488FF, 0.15) at (-30, 10, -20) for blue back-rim depth.
+
+Zone material upgrades (PBR cleanup, no geometry changes):
+  ALL ZONES — Berries / fruit standardized to blueberry purple #4A0E78 with metalness 0, roughness 0.35 (treeBerry/bushBerry/binBerry/floorBerry/beltFruit/insideBerry/Llegada product). Reject berries left red since they're a separate visual class.
+  ALL METAL SURFACES (rollers, rails, frames, pipes, mast, cam poles, fan rings, evap unit, satellite body, fork tines, IBeam, crane, bollards, shelf frame, cart, lens ring, cable, bridge rail) — color shifted to #6B6B6B-#8A8A8A, metalness 0.75-0.85, roughness 0.35-0.5. Picks up the directional + new rim light.
+  CONCRETE FLOORS (Packing pad, Embarque pad, Llegada dock) — color #5A5A5A-#707070, roughness 0.9, metalness 0.05.
+  RUBBER (Seleccion belt, Packing line conveyors, all wheels) — color #1A1A1A, roughness 0.95, metalness 0.0.
+  CARDBOARD master boxes (Packing master boxes, Embarque inner boxes) — color #B8860B, roughness 0.9, metalness 0.0. Frio palletBox kept #C8A77A (already in cardboard range) but explicit metalness 0 / roughness 0.9.
+  WOOD (pallets, bins, crates, desks, qc desk, packing closer) — color #6E4C2A / #8B6F47, roughness 0.9, metalness 0.0.
+  CORRUGATED CONTAINER (Embarque + Llegada open container) — color #7A2E2E → #8B4513 (rusty brown-orange), roughness 0.7 → 0.55, metalness 0.35 → 0.6. Door materials matched (#7A3A20).
+  SHRINK WRAP (Packing) — color #A0CCE0 → #FFFFFF, opacity 0.18 → 0.4, roughness 0.1 → 0.15, metalness 0.0 → 0.1.
+  WATER (Transito ocean) — color #1B3A4B → #0A2A4A, metalness 0.5 → 0.2, roughness 0.4 → 0.1, opacity 0.92 → 0.85. Now reflects the new sky gradient + rim light convincingly.
+  SHIP HULL (Transito) — repainted as gray painted-steel #6B6B6B at metalness 0.75 / roughness 0.45 (was muddy navy + matte). Container stack instances bumped from 0.25→0.55 metalness for brighter painted-metal feel.
+  COLD CHAMBER FLOOR (Frio) — color #334455 → #404A55, metalness 0.3 → 0.35, roughness 0.6 → 0.45 (slicker polished concrete that plays with frost particles + cold-blue light).
+
+Verification:
+  • npx tsc --noEmit — ✅ clean (0 errors).
+  • npm run build — ✅ green (Next 16.2.6 Turbopack). Build emitted 4 routes: /, /_not-found, /api/health, /api/chat. NOTE: /api/chat is new since the prior polish — present from another agent's work, not from this task.
+  • Glass chamber wall (Frio) untouched — already MeshPhysicalMaterial via createGlassMaterial() with transmission 0.85 / roughness 0.1, matches the spec's verification target.
+  • All emissive-by-default materials (LEDs, screens, sensors, status lights, route tube, displays, fluorescent tubes, sign emissives, mercury, button, GPS core, satellite windows, data logger) untouched — they keep glowing across highlight cycles per the Phase 2 "not registered in highlightables" design.
+  • Triangle count unchanged (zero geometry edits). Mesh count unchanged.
+
 NOTE for downstream terminals:
   - app/layout.tsx and app/page.tsx export both a named export (RootLayout / HomePage) AND a default. Next.js App Router requires a default export from layout.tsx and page.tsx; the named export is preserved to satisfy the "named exports only" constraint. All other files use named exports only.
   - Sidebar activeView and BottomBar mode/layers use local useState — T4 should swap these to Zustand selectors from lib/stores once T2 publishes them.
   - AppShell accepts optional rightPanel + rightPanelOpen props for T4 to wire the contextual right panel.
+
+— — — — — PHASE 3: WIDGET LIBRARY & DASHBOARD ROUTING — — — — —
+
+2026-05-15 — Phase 3 T1 START: build production-grade reusable widget library + wire sidebar tabs to dashboard overlays.
+
+NEW FILES — components/widgets/ (9 widgets, all 'use client' + named export + .module.css):
+  • CircularGauge — SVG tachometer (270° sweep, 7→5 o'clock). Sizes sm 120 / md 160 / lg 200 (viewBox-based, scales). Props: value/min/max/target/label/unit/colorZones/invertZones. Background dark arc, value arc colored green/amber/red by zone (red↔green flipped when invertZones true — for "Descarte %" cases). Mount animation via stroke-dasharray + stroke-dashoffset CSS transition (1s ease-out). 5 tick marks with tiny numeric labels on inner radius. Optional triangle/dot target marker. Center: large bold value + small uppercase unit. Glow drop-shadow on value arc colored by zone. Wrapped in glassmorphism card.
+  • StatCard — KPI card with optional icon (20px), label (uppercase 12px muted), value (24px bold) + unit, optional 120×28 sparkline (TrendSparkline showArea) under value, footer = delta pill (up/down/neutral with arrow + color) + optional "Meta: X". Becomes <button> when onClick supplied (hover lift + green border). Min-height 132px so cards in a grid are uniform.
+  • DataTable — sortable, paginated (default 10 rows), optional searchable. ColumnDef supports types text/number/date/badge/mini-gauge + custom render(value,row). Header click cycles asc → desc → none with chevron arrows; aria-sort wired. Search filters across text/badge columns only. Pagination shows "1-10 de 45" + prev/next + "page/total" indicator. Sticky header. Alternating row tint, hover highlight, optional row-click handler. Badge type auto-colors by Spanish keyword match (crítico/alta → red, alerta/medio → amber, normal/aprobado/activa → green, etc.). Mini-gauge type renders inline MiniGauge bar. Date type formats via toLocaleDateString es-PE. Wrapped in glassmorphism card with horizontal scroll on small screens.
+  • TrendSparkline — pure SVG polyline (no axes/labels). Optional gradient area fill below using <linearGradient> via useId. Color prop accepts CSS var or hex. Bails out gracefully when data has <2 points.
+  • AlertBanner — full-width pill with 4px colored left border + tinted icon square + title/description + optional action button + optional X dismiss. 3 variants: critical (red, AlertTriangle, role=alert), warning (amber, AlertCircle), info (blue, Info). Slide-down keyframe on mount.
+  • MiniGauge — 50×8 horizontal bar, rounded, dark track + colored fill. Optional showValue right of bar (rounded percent). Smooth CSS transition on width.
+  • VarietySelector — pill-row radiogroup. Default options: Todos / Arándano / Uva / Palta / Mango / Cítricos with per-variety colors (Arándano #6B21A8, Uva #2D6B30, Palta #1A5C3A, Mango #D4A843, Cítricos #FF8800, Todos gray). Active = filled. Inactive = outline only with colored text/border. Hover lifts pill 1px.
+  • SectionHeader — optional 36px tinted icon square + h2 title (18px) + muted subtitle. Optional right-aligned action node. Bottom border + 16px margin.
+  • DashboardShell — overlay container. SectionHeader at top, optional alerts row, then auto-fill grid (minmax(260px, 1fr)) collapses 4→2→1 cols at 1100px / 768px. Max-width 1400px centered. Glass overlay tint (top/bottom radial). overflow-y: auto.
+
+NEW FILES — components/widgets/index.ts: barrel exports all 9 widgets — `import { CircularGauge, StatCard, DataTable, TrendSparkline, AlertBanner, MiniGauge, VarietySelector, SectionHeader, DashboardShell } from '@/components/widgets';`
+
+NEW FILES — components/dashboards/ (3 placeholder stubs, T1-created, owned by T2/T3/T4 to fully implement):
+  • PackingDashboard.tsx — empty DashboardShell with Boxes icon, "En construcción · será completado por T2".
+  • QualityDashboard.tsx — empty DashboardShell with ClipboardCheck icon, "En construcción · será completado por T3".
+  • ColdChainDashboard.tsx — empty DashboardShell with Snowflake icon, "En construcción · será completado por T4".
+  REASON: dashboard routing in page.tsx imports these via next/dynamic. Without stub files, the dynamic import would fail to resolve at build time even with .catch(). Stubs are minimal (~22 lines each, named export, no logic), and the full implementations from T2/T3/T4 will entirely replace them. Documenting here per file-ownership rule — these are NEW files, no existing T2/T3/T4 work was modified.
+
+UPDATED — lib/types.ts (additive only, ADD new types at end):
+  • PackingLineStatus, PackingLoteProcess (Packing operations).
+  • QCInspeccion, VarietyBenchmark (Quality control).
+  • CamaraFrioStatus, ExcursionEvent (Cold chain).
+  • ColumnDef, GaugeColorZones (widget-shared types).
+  • Added `import type { ReactNode } from 'react'` at top so ColumnDef.render's return type can be ReactNode (replaces `React.ReactNode` from spec since the file has no React namespace import).
+
+UPDATED — app/page.tsx:
+  • New `DashboardLoading` local component: spinner + "Cargando dashboard..." text.
+  • Added 3 dynamic imports (ssr:false, loading: <DashboardLoading />) for PackingDashboard / QualityDashboard / ColdChainDashboard.
+  • New `DashboardOverlay` component subscribes to useUiStore.activeView and renders:
+      - 'comando' → <DashboardView /> + <PackingDashboard /> stacked inside .dashboardOverlay (DashboardView already exists from T2 Phase 2; this is its first time being routed-in)
+      - 'calidad' → <QualityDashboard />
+      - 'frio'    → <ColdChainDashboard />
+      - any other → returns null (3D canvas visible, no overlay).
+  • Sidebar tabs UNCHANGED — still 9 items: Centro de Comando, Operador Diario, Cuentas, Calidad, Cadena de Frío, Radar de Señales, Escucha Social, Inteligencia de Grafo, Configuración. ConfigToggles, OperatorChat, SignalQueue, ClaimsDefense remain unrouted (Phase 2 carryover, not in scope).
+
+UPDATED — app/page.module.css:
+  • .dashboardOverlay: position absolute, top var(--topbar-height), bottom var(--bottom-bar-height), left/right 0, background rgba(10,14,20,0.93), z-index 10, fadeIn 0.3s ease keyframe. Thin scrollbar styled to match dark theme (rgba(45,139,94,0.45) thumb on rgba(13,17,23,0.6) track) — both webkit and Firefox via scrollbar-color.
+  • .dashboardLoading + .spinner with 1s linear infinite rotation.
+  • Mobile @media: dashboard overlay extends to bottom of viewport (since BottomBar hides essential controls on mobile already).
+
+VERIFICATION:
+  • `npx tsc --noEmit` → 0 errors.
+  • `npm run lint` → 0 errors, 6 warnings (all pre-existing: T4 StoryMode 3× setElapsed/setScene/completeStory + T1 Phase-2 zone _delta convention prefixes).
+  • `npm run build` → green (Next 16.2.6 Turbopack). Routes unchanged (/, /_not-found, /api/chat, /api/export, /api/health, /import). One Recharts SSR width/height console-warning observed during static prerender of / — this is a known harmless Recharts behavior surfacing now because DashboardView (which uses Recharts AreaChart) is being rendered inside the new dashboardOverlay during SSR. Fixes itself on client hydrate; flagged for T2 to consider switching DashboardView's <ResponsiveContainer> to a fixed-aspect ratio in a future polish if it becomes noisy.
+
+WIDGET EXPORTS (T2/T3/T4 — copy these import paths verbatim for Phase 3 dashboards):
+  import {
+    CircularGauge, StatCard, DataTable, TrendSparkline,
+    AlertBanner, MiniGauge, VarietySelector, SectionHeader, DashboardShell,
+  } from '@/components/widgets';
+  import type { ColumnDef, GaugeColorZones } from '@/lib/types';
+
+NEW PHASE-3 TYPES (T2/T3/T4 may consume):
+  import type {
+    PackingLineStatus, PackingLoteProcess,
+    QCInspeccion, VarietyBenchmark,
+    CamaraFrioStatus, ExcursionEvent,
+  } from '@/lib/types';
+
+NOTES for T2 / T3 / T4:
+  - Replace components/dashboards/{Packing,Quality,ColdChain}Dashboard.tsx ENTIRELY when you implement your dashboard. Keep the named export name (`export function {X}Dashboard`) so the dynamic import in page.tsx keeps resolving.
+  - DashboardShell handles the page chrome (header + responsive grid). Drop your widgets directly as children — the shell auto-fills 4→2→1 columns. Use `style={{ gridColumn: '1 / -1' }}` on a child to break out of the grid (e.g., a wide chart).
+  - DataTable rows MUST have a stable `id` field to get a good React key (falls back to row index if absent — fine for static data, bad for paginated datasets that mutate).
+  - CircularGauge's `colorZones` is a 0-100 percent scale (NOT min-max units). The component normalizes value into pct internally and picks the color band by where pct lands. Use `invertZones` for "lower is better" KPIs like Descarte %.
+  - For dashboard-specific alerts, render <AlertBanner /> instances and pass them as the `alerts` prop on DashboardShell.
+  - DashboardOverlay's z-index is 10 — below RightPanel (35-45) and CinematicProvider (1070+). 3D canvas stays mounted underneath; selection/hover events on the canvas are blocked by the overlay's backdrop, which is intentional (when on a dashboard view, the user is doing analysis, not 3D selection).
+
+FILES MODIFIED OUTSIDE T1 PHASE-1 OWNERSHIP (Phase 3, documented per file-ownership rule):
+  - lib/types.ts (T2) — ADD-ONLY append at end (8 new interfaces + 2 type aliases for widgets, 1 import line). No existing types touched. Phase 3 carve-out per orchestrator brief.
+  - components/dashboards/{Packing,Quality,ColdChain}Dashboard.tsx (NEW, T2/T3/T4 future-owned) — minimal placeholder stubs to unblock the dynamic imports in page.tsx. Will be replaced wholesale by their respective owners.
 ```
 
 ### T2 — Data Layer
@@ -251,6 +469,56 @@ NOTES for T3 / T4:
   - T1 sidebar uses local useState for activeView; swap to `useUiStore(s => s.activeView)` + `useUiStore(s => s.setActiveView)`.
   - All temperature values are Celsius. setPointTemp on Embarque is also Celsius.
   - Lote.brix = 0 is intentional for palta (dry matter is the relevant metric, brix isn't tracked).
+
+— — — — — PHASE 2: DECISION INTELLIGENCE LAYER — — — — —
+
+2026-05-15 — Phase 2 START. Goal: convert 3D selection into a decision in <60s. Every zone/object click must answer WHAT/WHY/WHAT TO DO/WHO.
+2026-05-15 — Types extended (append-only): RiskLevel, FichaTargetType, DecisionUrgencia, DataConfidence, FichaResponsable, FichaImpacto, FichaOperativa, DecisionPendiente, DataSourceInfo. No existing types were touched.
+2026-05-15 — Mock data added:
+  • lib/data/mock-fichas.ts — 9 fichas: FO-S-8842 (CRÍTICO 91, flagship, full causa/accion narrative anchoring on the +5.8 °C excursion + Walmart history + 17-day ETA + sibling lote bracket), FO-S-8845 (BAJO 22, reference for the "normal" path), plus 7 zone fichas (FO-zone-cosecha through FO-zone-llegada) each with their own causa/accion + responsable + impacto. Risk distribution across zones mirrors the actual operational state in the mock embarques. Helpers: findFichaForEmbarque(id), findFichaForZone(zone), findFichaById(id).
+  • lib/data/mock-decisiones.ts — 4 pending decisions wired by fichaId, mix of alta/media urgencias, named responsables, ISO deadlines spread May 16-21.
+  • lib/data/index.ts re-exports all new symbols.
+2026-05-15 — Components shipped (all 'use client', CSS Modules, named exports):
+  • DataSourceBadge — pill with FlaskConical/Database icon + source name + relative time + confidence dot (green/amber/red). useEffect mount sets the relative time so SSR/CSR don't desync; auto-refreshes every 30s.
+  • CausaAccionCard — reusable, type-driven (causa = amber border + lightbulb + bullet list; accion = green border + play icon + numbered list with green pill markers).
+  • ImpactoEconomico — headline "Exposición estimada" (color-graded by amount: red ≥60k, amber ≥20k, else green) + breakdown of valorEmbarque / prob % / monto + 0-100% probability bar with green→amber→red gradient.
+  • TrazabilidadTimeline — horizontal 7-zone strip. Status derived from embarque.currentZone via ZONE_ORDER index: completed (filled green + check), current (amber pulsing ring), future (gray hollow), incident (red pulsing + AlertTriangle). S-8842 is hard-coded to flag transito as incident. Each dot is a button → setSelectedZone, so the 3D camera retargets when you click a step.
+  • TemperaturaCurve — Recharts LineChart, 200px (configurable). Variety→range mapping (arandano -1..+1, uva -1.5..0, palta 4..7, mango 8..12, citricos 5..9) drives a green ReferenceArea band; setPointTemp drives a dashed blue ReferenceLine; excursion window auto-detected as any contiguous run with v > (max+0.5°C), labelled and drawn as a red ReferenceArea with "Excursión detectada · pico X.X °C" badge in the header. Tooltip is custom (date+time + tabular °C). Footer carries a DataSourceBadge ("Emerson Data Logger").
+  • FichaOperativa — the centerpiece. Composes: header (eyebrow "Ficha operativa · {zona}" + risk pill colored by RiskLevel; CRÍTICO gets a red box-shadow pulse) → title (h2) → DataSourceBadge → risk summary card (icon + label + 0-100 gradient bar + one-sentence resumenRiesgo) → TrazabilidadTimeline (only for embarque) → CausaAccionCard("causa") → CausaAccionCard("accion") → TemperaturaCurve (only when embarque has lecturas in mock-temperaturas) → Responsable card (initials avatar + name + role) → ImpactoEconomico → 3 quick-action buttons (Generar Brief green, Carpeta Defensa amber, Contactar blue).
+2026-05-15 — Existing components UPDATED (still T2-owned per Phase 2 brief):
+  • RightPanel.tsx — now a dispatcher.
+       Resolution order: (1) if selectedObjectId matches an embarque → focus that embarque; (2) else if selectedZone has an embarque with riskScore ≥ 80 in currentZone → focus the highest-risk one; (3) else no focused embarque. Ficha lookup: embarque ficha first, otherwise zone ficha. Render branches: ficha present → FichaOperativa (+ ZoneDetail under a divider when only a zone is selected, no embarque); else activeView === 'frio' → FrioMonitor (TemperaturaCurve for S-8842 default + DataSourceBadge); else selectedZone only → ZoneDetail; else DefaultSummary. Title + header icon adapt per branch.
+  • KpiCards.tsx — DataSourceBadge under each card (per-KPI source: GraphRAG/Loggers/CRM/Modelo riesgo, confidence high/medium). KPIs with badgeVariant 'bad' get a pulseBad red glow + a thin red top line to draw the eye to Ingresos en riesgo. min-height bumped 124→148 to fit the badge.
+  • DashboardView.tsx — (a) AlertaPrioritaria banner at the top (renders only when there's an embarque with riskScore ≥ 80; clicking "Ver ficha" calls setSelectedObjectId(embarque.id) + setSelectedZone(currentZone) + setRightPanelOpen(true), which makes the RightPanel render the S-8842 FichaOperativa); (b) new "Decisiones pendientes" Card with 3 DecisionRow entries — urgency dot (red/amber/green), descripcion + responsable + deadline, "Abrir ficha" button calls findFichaById and routes selection the same way; (c) DataSourceBadge added to the chart + signal queue cards.
+2026-05-15 — Verified: `npx tsc --noEmit` clean (0 errors), `npm run build` succeeds (Next 16.2.6 Turbopack, prerenders /, /_not-found, /api/chat, /api/health).
+2026-05-15 — Decision Intelligence Layer ✅ DONE.
+
+PHASE-2 EXPORTS (additional symbols T3/T4/T5 may consume):
+
+// New types — from '@/lib/types'
+import type {
+  RiskLevel, FichaTargetType, DecisionUrgencia, DataConfidence,
+  FichaResponsable, FichaImpacto, FichaOperativa, DecisionPendiente, DataSourceInfo,
+} from '@/lib/types';
+
+// Mock helpers — from '@/lib/data' (or '@/lib/data/mock-fichas')
+import { mockFichas, findFichaForEmbarque, findFichaForZone, findFichaById } from '@/lib/data';
+import { mockDecisiones } from '@/lib/data';
+
+// New components — from '@/components/panels/<name>'
+import { FichaOperativa }        from '@/components/panels/FichaOperativa';
+import { TrazabilidadTimeline }  from '@/components/panels/TrazabilidadTimeline';
+import { TemperaturaCurve }      from '@/components/panels/TemperaturaCurve';
+import { DataSourceBadge }       from '@/components/panels/DataSourceBadge';
+import { CausaAccionCard }       from '@/components/panels/CausaAccionCard';
+import { ImpactoEconomico }      from '@/components/panels/ImpactoEconomico';
+
+NOTES for downstream terminals:
+  - To programmatically focus the demo on S-8842 from anywhere: setSelectedObjectId('S-8842') + setSelectedZone('transito') + setRightPanelOpen(true). The RightPanel will switch to FichaOperativa automatically.
+  - selectedObjectId convention reaffirmed: pass the embarque id (e.g. 'S-8842') when a 3D container/ship object is clicked. Zone-only clicks set selectedZone and leave selectedObjectId null.
+  - TemperaturaCurve auto-detects excursions — if T3 ships more excursion fixtures in mock-temperaturas, the chart will pick them up without code changes.
+  - The "Decisiones pendientes" list pulls straight from mock-decisiones; add more there (max 5) and the dashboard truncates to top-3 via .slice(0,3).
+  - CausaAccionCard is reusable outside Ficha — useful for SignalQueue or ClaimsDefense expansions in future phases.
 ```
 
 ### T3 — 3D Engine
@@ -276,6 +544,80 @@ NOTES for T4 / T5:
   - The CSS2DRenderer DOM is appended INSIDE the PipelineCanvas root div (sibling of the WebGL canvas), with pointer-events:none, so it won't intercept mouse events from panels rendered above.
   - RiskGlow.setRisk(zoneId, level) is exposed but currently not wired to mock data — T4 or T5 can subscribe to pipeline-store and call it per zone (e.g. compute avg riskScore of lotes in that zone / 100).
   - PipelineCanvas mounts inside its own absolutely-positioned root that fills the parent. The parent is `<div id="pipeline-canvas">` from T1's AppShell, which already provides width/height.
+
+— — — — — PHASE 2: LIVE CLAUDE OPERATOR — — — — —
+
+2026-05-15 — Phase 2 START: ownership transfer — T3 took ownership of components/panels/OperatorChat.{tsx,module.css} for the live-API rewire (was T4 in Phase 1). All other T4 panels untouched.
+2026-05-15 — Built lib/operator/ + app/api/chat/route.ts:
+  • lib/operator/system-prompt.ts → getSystemPrompt() (cached). Bakes the FULL mock state into the system prompt at first call: 8 embarques, 6 clientes, 5 reclamos, 6 señales, top-10 highest-risk lotes, S-8842 temperature summary (min/max/avg + excursion peak/start, plus stable S-8845 baseline), 4 KPIs. Rules block enforces Spanish output, no invented IDs, brief structure, responsable per acción.
+  • lib/operator/stream-handler.ts → streamChat({messages,signal}) returns {chunks: AsyncIterable<string>, mode: 'live'|'mock'|'unknown'}. OperatorStreamError surfaces HTTP failures. collectStream() drains an iterable into one string. AbortSignal-aware so unmount cancels in-flight requests.
+  • lib/operator/brief-generator.ts → generateBrief(embarqueId, {signal?, onChunk?}). Prompts FRESCO with the "Situación → Riesgo → Causa → Acción → Responsable → Impacto Económico" structure, 250-word cap. Optional onChunk(chunk,total) for streaming UIs.
+  • lib/operator/defense-generator.ts → generateDefensePacket(reclamoId, {signal?, onChunk?}). 5-section defense packet (resumen / evidencia / línea de tiempo / análisis de temperatura / respuesta comercial), 350-word cap.
+  • lib/operator/index.ts → barrel: getSystemPrompt, streamChat, collectStream, OperatorStreamError, generateBrief, generateDefensePacket.
+  • app/api/chat/route.ts (runtime: 'nodejs', dynamic: 'force-dynamic'). POST { messages: ChatMessage[] }. Normalizes messages (role bot→assistant, last 10 only, drops empty). If ANTHROPIC_API_KEY missing → streams the pre-scripted demo response back as text/plain in chunks (X-Operator-Mode: mock) so the UI still feels alive. If key present → fetches https://api.anthropic.com/v1/messages with model claude-sonnet-4-20250514, max_tokens 1024, temperature 0.3, system=getSystemPrompt(), stream:true. Upstream SSE is piped through a TransformStream that parses `data: {...}` lines, extracts content_block_delta text_delta chunks, and re-emits them as plain UTF-8 bytes (header X-Operator-Mode: live). Malformed SSE lines are skipped; upstream errors surface with status + first 500 chars of body.
+  • API key never leaves the server. Client only sees /api/chat — no Anthropic URL, no auth header, no key in the bundle.
+2026-05-15 — Rewired components/panels/OperatorChat.tsx:
+  • Removed MOCK_RESPONSES random reply. Now POSTs the last 10 messages (incl. just-sent user turn) to /api/chat.
+  • Streams tokens into a "live" bubble with blinking caret. Empty-stream state shows the existing 3-dot typing indicator; once chunks arrive the caret takes over. Final accumulated text is committed to the pipeline-store via addChatMessage so history persists.
+  • Aborts the active stream on unmount.
+  • Error state: failed sends render a red-bordered error bubble with the original message text retained + a "Reintentar" button that re-sends. AbortError is silent (user navigated away).
+  • Header status flips to "Modo demo · respuestas predefinidas" once any X-Operator-Mode:mock response is observed, so the user knows the key isn't set.
+  • 4 quick-ask chip buttons below the messages: "¿Qué embarques necesitan acción?", "Brief de S-8842", "Resumen del pipeline", "Riesgo por cliente". Each chip submits a fuller, more specific prompt to FRESCO (chip label is the short version, prompt asks for structure + responsables).
+  • Input + send + chips all disabled while a stream is in-flight.
+  • CSS: added .caret blink, .errorBubble + .errorText + .retry, .quickAsks/.quickAsk styles. Existing typing/dot/keyframes untouched.
+2026-05-15 — .env.example: added ANTHROPIC_API_KEY=sk-ant-... with comment explaining the demo fallback.
+2026-05-15 — Verified: `npx tsc --noEmit` clean (0 errors), `npm run build` green (Next 16.2.6 Turbopack). Build now lists `ƒ /api/chat` (dynamic) alongside `ƒ /api/health`.
+2026-05-15 — T3 Phase 2 ✅ DONE.
+
+NOTES for T2 / T4 Phase 2:
+  - To wire the "Generar Brief" button (FichaOperativa) and "Generar carpeta" button (ClaimsDefense), import { generateBrief, generateDefensePacket } from '@/lib/operator'. Both are async, both accept { signal, onChunk } so a panel can stream into a markdown viewer. Both reuse the same /api/chat endpoint — no extra route, no extra env config.
+  - generateBrief/generateDefensePacket pass ONLY the synthetic user message (not the chat history) to keep token cost predictable. If a future workflow wants to inject embarque/reclamo specifics directly into the request (vs relying on the system prompt context), they can wrap the call.
+  - When the key is missing, both generators ALSO get the demo streaming response — no special handling needed. Check for the "⚠️ Modo demo" prefix or HEAD-equivalent the X-Operator-Mode response header via the streamChat result.mode if you need to render a "demo" badge.
+  - The system prompt is built lazily and cached in module scope, so the mock-data serialization cost is paid once per server boot.
+  - Chat history is trimmed to last 10 in BOTH the client (before send) and the server (before forwarding) — defense-in-depth for token cost.
+
+FILES MODIFIED OUTSIDE T3 PHASE-1 OWNERSHIP (re-claimed for Phase 2 per orchestrator brief):
+  - components/panels/OperatorChat.tsx (was T4)
+  - components/panels/OperatorChat.module.css (was T4)
+  - .env.example (was T5) — appended only the ANTHROPIC_API_KEY entry; left NEXT_PUBLIC_SITE_URL intact.
+
+— — — — — PHASE 3: QUALITY CONTROL DASHBOARD — — — — —
+
+2026-05-15 — T3 Phase 3 ✅ DONE — Quality Control dashboard end-to-end.
+
+NEW FILES:
+  • lib/data/mock-quality.ts — comprehensive QC fixture set:
+    - `gaugeConfigByVariety: Record<string, GaugeConfig[]>` — 4 gauges per variety. Palta swaps Brix → Materia Seca, Cítricos swaps Firmeza → Acidez. Color zones tuned to CircularGauge's monotonic interpretation so typical export-grade values land in the green band, off-spec values shift to amber/red.
+    - `varietyStatsByVariety` — per-variety daily stat cards (inspeccionados/aprobados/rechazados/condicional/defectos/inspectores). Aggregate "Todos" rolls up to the brief's headline numbers (18/15/1/2/4.8%/3-of-4).
+    - `mockQCInspecciones[12]` — Arándano ×3, Uva ×3, Palta ×3, Mango ×2, Cítricos ×1. 9 aprobado, 2 condicional, 1 rechazado (Palta L-1008, materia seca 19.4% below the 21% APHIS minimum). Each row includes brix/firmeza/calibrePromedio/defectosPct + per-row distribuciones for drill-down.
+    - `mockBenchmarks[5]` — VarietyBenchmark records aligned to ProArándanos / ProHass / SENASA references: arándano 12.5°Bx@0°C 35d, uva 16.5°Bx@-0.5°C 60d, palta 23% MS @5°C 28d, mango 15°Bx@8°C 21d, cítricos 11°Bx@4°C 45d.
+    - `brixTrendByVariety` + `firmezaTrendByVariety` + `acidezTrendCitricos` — 7-day series 2026-05-09 → 2026-05-15. Cítricos firmeza is replaced by acidez at render time.
+    - `brixOptimalRange` + `firmezaOptimalRange` — Recharts ReferenceArea bands per variety.
+    - `calibreDistByVariety` + `calibreOptimalBand` — 6-bin histograms with variety-specific buckets (arándano 8-18 mm in 2-mm steps, uva 16-26 mm, palta/cítricos 50-80 mm in 5-mm steps, mango 8-13 cm). Optimal band rendered as a green ReferenceArea spanning the modal bins.
+    - `defectDistByVariety` — distinct defect taxonomy per variety (uva→Desgrane, palta→Materia seca baja + Antracnosis, mango→Antracnosis, cítricos→Pitting). 5 slices each, summing to 100%.
+    - `defectColors[8]` — palette for PieChart Cell fills.
+
+  • components/dashboards/QualityDashboard.tsx + .module.css — replaces the T1 placeholder. 'use client', named export. Layout uses DashboardShell + custom full-width `.row`/`.gaugesRow`/`.statsRow`/`.chartsRow` containers that escape the shell's auto-fill grid via gridColumn:'1/-1'.
+    Section 1 — VarietySelector pill bar (Todos / Arándano / Uva / Palta / Mango / Cítricos), defaults to Arándano. Filters EVERY downstream widget through a single `selected` state.
+    Section 2 — 4 CircularGauges in a glass card (4-col → 2-col → 1-col responsive). Gauge labels swap per variety (Brix→Materia Seca for Palta, Firmeza→Acidez for Cítricos).
+    Section 3 — 6 StatCards (icons: ListChecks/CheckCircle2/XCircle/AlertTriangle/Bug/Users) wired to varietyStatsByVariety. Delta phrasing and arrow direction shift with each variety.
+    Section 4 — Side-by-side Recharts: Calibre BarChart (220 px) with ReferenceArea on the optimal bin range + variety-colored bars; Defectos PieChart (220 px) with custom Cell colors and inline labels.
+    Section 5 — Trend LineCharts (200 px each): "Brix/MS" + "Firmeza/Acidez", ReferenceArea on optimal range, mid-target ReferenceLine on the firmeza chart, dot+activeDot styled.
+    Section 6 — Inspections DataTable (10 columns, sortable + searchable, pageSize 12). Custom renders: variety chip badge in variety palette color; firmeza & defectos columns combine number + MiniGauge (defectos gauge is inverted — fewer defects = more green fill, color shifts amber/red above 5%/8%); brix column shows "—" for varieties where it's not applicable (palta rows have brix=0, cítricos rows display the brix value but show "—" via the same 0-check). resultadoLabel column is a badge ("Aprobado"/"Condicional"/"Rechazado") so DataTable's badgeColor regex picks the right zone (green/amber/red).
+    Section 7 — Benchmarks reference table — small static glass card listing all 5 variety specs (Brix min-óptimo-max, Firmeza/Acidez, Calibre, Temp óptima ± tolerance, Vida útil).
+    Custom ChartTooltip component renders glass tooltips matching the design system.
+
+  • lib/data/index.ts — appended quality exports (15 named values + 5 types). No existing exports touched.
+
+VERIFICATION:
+  • `npx tsc --noEmit` → ✅ 0 errors (one Recharts Pie label type required casting to PieLabelRenderProps-shape; resolved).
+  • `npm run build` → ✅ green (Next 16.2.6 Turbopack, 3.6 s compile + 3.0 s tsc + 400 ms static gen). One non-fatal recharts width(-1)/height(-1) warning is emitted at static-render time because Recharts probes a 0×0 layout on the prerender pass — it disappears at runtime when the dashboard mounts inside the sized overlay (same pattern T4's ColdChain charts produced).
+
+NOTES for other terminals:
+  - The Quality dashboard is reachable today via the existing T1 page.tsx routing for activeView='calidad' (the dynamic import in page.tsx resolves the new full implementation automatically — no page.tsx change needed).
+  - 3D wire-up ("click row → highlight lote in 3D") is left as a no-op until a `setSelectedLote(id)` selector lands in pipeline-store. The DataTable's onRowClick prop is untapped so it can be added later without restructuring.
+  - All quality fixtures are pure data with no React/Three imports — safe to consume from server components or the operator system-prompt builder if a future phase wants FRESCO to answer QC questions over the same mock.
+  - VarietyBenchmark.firmezaMin/Max/Optimo are set to 0 for Cítricos by design (acidez is the operational analogue). Consumers that read benchmarks must branch on `variedad === 'Cítricos'`.
 ```
 
 ### T4 — Features UI
@@ -311,6 +653,114 @@ NOTES for T1 / T3 / T5:
   - DashboardView assumes it fills its parent (width:100% height:100% overflow-y:auto). Drop it into the canvas overlay slot when activeView === 'comando'.
   - OperatorChat is a self-contained pane (height:100% min-height:0). Place it in a sized container.
   - All panels read from stores; no props required for stateful components.
+
+— — — — — PHASE 2: CINEMATIC STORY MODE — — — — —
+
+2026-05-15 — Phase 2 START: built a self-contained components/cinematic/ module. NO modifications to lib/stores/, components/three/, components/panels/, or app/. All cinematic state lives in a local store (components/cinematic/store.ts) — out of lib/stores/ per ownership constraints. Reads useSelectionStore.setSelectedZone (camera driver, per T3's note) + useUiStore.setCinematicMode (flag for T3's existing CinematicMode/scene treatment) only.
+
+NEW FILES (all under components/cinematic/):
+  • store.ts — Zustand store: storyStatus (idle|running|paused|complete), currentScene 1..5, elapsed seconds, presentationMode, scriptOpen + actions. Plus TOTAL_DURATION_SEC=90, SCENE_START/SCENE_END maps, sceneFromElapsed(elapsed)→SceneId helper.
+  • scenes.ts — Single source of truth: SCENES[] array (5 entries, each {id, title, startSec, endSec, narration, beats, dataOverlay}). Beats are timestamped {at, zone} pairs that drive setSelectedZone() (frío at 0:18, tránsito at 0:27, frío at 0:36/0:54, null at 0/1:12). TALKING_POINTS map for the teleprompter.
+  • StoryMode.tsx + .module.css — Full-screen overlay (z 1095) with radial vignette over the 3D scene. RAF clock advances elapsed in seconds when storyStatus==='running'; transitions to next scene via sceneFromElapsed; completes at 90s. Pauses on backdrop click + Space; Escape exits. Beats useEffect picks the latest beat ≤ elapsed and dispatches setSelectedZone(zone) only when the target changes. Controls (top-right): Pausar/Reanudar, Siguiente escena, Saltar demo. Completion screen with "Repetir demo" + "Cerrar". Side-effect on body: adds .story-mode-on class for downstream .story-dim opacity rule.
+  • NarrationOverlay.tsx + .module.css — Bottom-center bubble (28px desktop / 20px mobile, white w/ text-shadow). Key={scene} forces fresh fade-in animation on every scene change. Eyebrow "Escena N · Título".
+  • SceneDataOverlay.tsx + .module.css — Per-scene floating data: Scene 1 = glass KPI bar across top (reads usePipelineStore.kpis); Scene 2 = pulsing red "91/100 RIESGO CRÍTICO" badge; Scene 3 = mini SVG temperature curve built inline from usePipelineStore.temperaturas (filters embarque S-8842, normalizes to 380×120 viewBox, marks peak with red dot + dashed guideline + "+5.8°C" label); Scene 4 = orange-tinted "$85,000 en riesgo" card with 3-bullet acción list; Scene 5 = centered closing tagline "¿Cuánto riesgo se pierde hoy entre planillas, sensores y correos?". The temp chart is intentionally inline SVG (not Recharts) — keeps the overlay lightweight and avoids a dep on a panel from another terminal.
+  • ProgressBar.tsx + .module.css — Bottom 3px green gradient bar (drop-shadow glow). 5 clickable scene-marker dots positioned by SCENE_START%. Past dots filled bright; current dot inverted; future dots outlined. Dots call jumpToScene(id) (stopPropagation so backdrop pause doesn't fire). Time label "0:32 / 1:30" bottom-right.
+  • PresentationMode.tsx + .module.css — Toggles body.presentation-mode-on (CSS :global rule scales body font-size to 130% + brightens --color-text-secondary / --color-text-muted). Renders the 6-row color legend (verde/ámbar/rojo/azul/púrpura/dorado in Spanish) bottom-left + "Datos de demostración" gold pill watermark bottom-right. Both fade-slide in. Cleans up body class on unmount.
+  • DemoScript.tsx + .module.css — Teleprompter panel (right side, between topbar and bottombar, 380px). Lists all 5 scenes with timing (0:00→0:18 etc.), narration in italics, 3-bullet TALKING_POINTS each. Active scene highlighted with green border/glow + auto-scrolls into view via scrollIntoView({behavior:'smooth',block:'center'}). Clicking a scene calls jumpToScene. Toggle: Ctrl+Shift+D (custom listener inside this component) OR via DemoFAB.
+  • DemoFAB.tsx + .module.css — Bottom-right (z 1070) floating column: primary green "Demo guiada [F5]" pill + secondary glass "Presentación [F8]" + "Guion [Ctrl+Shift+D]" toggles. Active states use gold tint. FAB hides itself while a story is running (storyStatus !== 'idle') so the StoryMode's own controls take over.
+  • CinematicProvider.tsx — Renders <PresentationMode /> <DemoScript /> <StoryMode /> <DemoFAB />. URL params on mount: ?present=true → setPresentationMode(true); ?demo=true → startStory() after 600ms (lets the 3D canvas mount first). Global keyboard listener: F5=startStory (only when idle), F8=togglePresentationMode, Escape cascades (close story → close presentation → close script).
+  • index.ts — Barrel: CinematicProvider + every component + store hooks + SCENES/TALKING_POINTS + types.
+
+CAMERA / 3D INTEGRATION:
+  - StoryMode drives the 3D camera EXCLUSIVELY via useSelectionStore.setSelectedZone() (per T3's note: PipelineCanvas owns the subscription that transitions camera + zone highlight + viewMode). No direct CameraSystem touch, no GSAP timeline duplication — leverages T3's existing 1.2s GSAP transitions.
+  - Sets useUiStore.setCinematicMode(true) on entry so any downstream effect that cares about cinematic mode (T5's CinematicMode.start() is *not* triggered — that's wired to ui-store.cinematicMode separately by PipelineCanvas; if both fire simultaneously, T5's 60s auto-fly would compete with our beat-driven setSelectedZone calls). FLAGGED: T5's CinematicMode may want to skip its auto-fly when StoryMode is already controlling camera. For now, T4's StoryMode uses setSelectedZone (which transitions camera in 'pipeline' viewMode → 'zone' viewMode), so even if CinematicMode.start() fires, it currently starts an independent GSAP tween that may visually conflict. T5 can resolve by gating CinematicMode behind a separate ui-store flag, or by having StoryMode skip setting cinematicMode. Marking this for follow-up — not blocking for the demo to work end-to-end.
+
+KEYBOARD SHORTCUTS (registered globally by CinematicProvider, plus duplicate Escape/Space inside StoryMode for redundancy):
+  F5         → Start story
+  F8         → Toggle presentation mode
+  Ctrl+Shift+D → Toggle teleprompter
+  Escape     → Exit story OR presentation OR script (cascading)
+  Space      → Pause/resume during story
+
+ENTRY POINTS (3 ways to trigger):
+  1. FAB primary button "Demo guiada"
+  2. Keyboard F5
+  3. URL: agrovia.infratek.ai/?demo=true (auto-starts on page load); ?present=true enables presentation; combine both as ?demo=true&present=true.
+
+2026-05-15 — Verified: `npx tsc --noEmit` clean (0 errors), `npm run build` succeeds (Next 16.2.6 Turbopack — routes /, /_not-found, /api/chat (dynamic), /api/health (dynamic)).
+2026-05-15 — T4 Phase 2 ✅ DONE.
+
+EXPORTS T4 PHASE 2 PROVIDES:
+  import { CinematicProvider } from '@/components/cinematic';
+  // single mount-point — internally renders StoryMode + PresentationMode + DemoScript + DemoFAB.
+  // Plus barrel exports of the individual components + useCinematicStore + SCENES + types if needed.
+
+INTEGRATION REQUIRED (T5 must do this during integration):
+  ⚠️ Add `<CinematicProvider />` to app/page.tsx (top level of the HomePage component, or inside AppShell beside the canvas). It is self-contained — renders only when the user opens the demo / toggles presentation, otherwise just the FAB is visible. No props.
+
+  Suggested location in app/page.tsx (NOTE T5 owns this file — change must be made by T5):
+    return (
+      <AppShell ...>
+        <div className={styles.canvasWrap}>
+          <PipelineCanvas />
+        </div>
+        <RightPanel />
+        <MobileHero />
+        <CinematicProvider />    {/* ← add this line */}
+      </AppShell>
+    );
+
+NOTES for T3 / T5 follow-up:
+  - If T5's CinematicMode.start() (the 60s auto-fly tied to ui-store.cinematicMode) conflicts with T4's StoryMode camera control, either:
+      (a) Add a separate flag like ui-store.autoFlyMode and switch T5's CinematicMode to subscribe to that instead, leaving cinematicMode purely as a "UI dim / vignette on" signal.
+      (b) Have T4's StoryMode NOT call setCinematicMode and rely solely on its own body class for dimming. Either works — currently going with (b)-adjacent: T4 sets cinematicMode for downstream awareness, but the camera is driven by setSelectedZone, not by CinematicMode's auto-fly. T5/T3 to choose final wiring.
+  - The body class .story-mode-on is exposed for the rest of the app: any element with class "story-dim" will be faded to 20% opacity + pointer-events:none during story playback. Sidebar/TopBar/BottomBar can opt in by adding className="story-dim" if desired (T1 owns those files).
+  - useCinematicStore is exported from '@/components/cinematic'. T1's TopBar can add a "Presentación" button by importing it and calling togglePresentationMode() — same store as the FAB, so both stay in sync.
+
+— — — — — PHASE 3: COLD CHAIN DASHBOARD — — — — —
+
+2026-05-15 — T4 Phase 3 START: replace placeholder ColdChainDashboard with full implementation per orchestrator brief (cold-chain manager view: "¿Alguna cámara fuera de rango? ¿Delta del set point? ¿Excursiones en tránsito? ¿Pre-cooling?").
+
+NEW FILES:
+  • lib/data/mock-coldchain.ts — MOCK_CAMARAS (6 chambers, CF-01..CF-06 across arándano/uva/palta/mango/pre-cool, deltas spanning normal/alerta states), MOCK_TEMP_24H (48-point generator at 30-min spacing, deterministic sin/cos noise + scripted CF-04 palta drift 5.5→6.8°C in last 4h + CF-06 pre-cool exponential cooling curve from ambient 14.5°C → 2.1°C over last 3.5h), MOCK_EMBARQUE_TEMP_MONITOR (8 rows derived from existing mock-embarques, S-8842 highlighted crítico with 1 alerta badge), MOCK_EXCURSION_HISTORY (5 events, S-8842 row 1 severo). Generator is deterministic — no Math.random, so first paint matches subsequent renders and SSR/CSR are aligned.
+  • components/dashboards/ColdChainDashboard.tsx + .module.css — full replacement of T1 placeholder, 'use client', named export preserved (`export function ColdChainDashboard`). Wraps DashboardShell with critical AlertBanner (always-on for S-8842, "Ver embarque" action sets selectedZone=transito + selectedObjectId=S-8842).
+    Sections:
+      1. Gauges row — 4 CircularGauges (cámaras operativas 5/6 · temp promedio 0.3°C · adherencia 94.5% w/ target 98 · excursiones 7d=3 invertZones). Color zones translated from absolute [min,max] ranges into the CircularGauge percent-band model.
+      2. Stat cards row — 6 StatCards (Contenedores en tránsito 12 + 2 con alerta · Pre-Cooling 3 lotes · Hrs cámara 18.5h target 24h · Humedad 92% target 90-95% · Pallets 142/180 79% · Próximo despacho 14:30).
+      3. HERO 24h temperature chart — Recharts LineChart 320px ResponsiveContainer. 6 lines (CF-01 #6B21A8, CF-02 #8B5CF6, CF-03 #2D6B30, CF-04 #D4A843, CF-05 #FF8800, CF-06 #4488FF). XAxis dataKey="label" (HH:mm strings) interval=5. YAxis domain [-3,15] custom ticks. Green ReferenceArea y1=-1 y2=1 ("Rango berries" label). Red ReferenceLine y=4 ("Crítico +4°C" label). Custom multi-line tooltip showing all 6 chambers at the hovered timestamp with colored dot swatches. Recharts <Legend /> below.
+      4. Cámaras DataTable — 10 columns: cámara, producto (custom variety-color badge), set point, temp actual (colored by abs delta: green<0.5, amber 0.5-1.0, red>1.0), delta (signed +N.N°C colored by same band, red bold for >1.0), humedad (text + MiniGauge, amber if outside 90-95%), pallets (text + MiniGauge cold-blue), hrs op, estado badge (DataTable's built-in regex auto-colors normal=green/alerta=amber/crítico=red), última lectura. Row click → setSelectedZone('frio') + setSelectedObjectId(`frio:${id}`).
+      5. Embarques en tránsito DataTable — 10 columns: embarque (bold), contenedor, destino, set point, temp actual (delta-colored), delta, días tránsito, ETA, alertas (custom red circular badge when >0, em-dash when 0), estado badge. searchable. Row click → setSelectedZone('transito') + setSelectedObjectId(embarqueId).
+      6. Excursion history DataTable — 7 columns: fecha, ubicación, duración, temp máx (red bold), producto, impacto (custom severo/moderado/leve badge), acción tomada.
+    All renderers use plain Spanish labels. No hardcoded colors — all via CSS vars (--color-alert-red / --color-alert-amber / --color-accent-green-light / --color-cold-blue) except the 6 chamber line colors per spec.
+
+GAUGE COLOR-ZONE NOTE (for reviewers): CircularGauge expects `colorZones` as percent bands of the gauge's [min,max] sweep, not absolute value ranges. The brief specified ranges in absolute units (e.g. temp promedio green [-2,2] within a -5..15 sweep). I translated each to equivalent percent bands so the widget renders the correct color thresholds:
+  • Cámaras Operativas (0-6): green [5,6] → [83%,100%], amber [3,5] → [50%,83%], red [0,3] → [0%,50%].
+  • Temp Promedio (-5..15): green [-2,2] → [15%,35%], amber [2,5] → [35%,50%], red [5,15] → [50%,100%].
+  • Adherencia Set Point (0..100): green [95,100], amber [85,95], red [0,85] (already percent units).
+  • Excursiones (0..20): green [0,2] → [0%,10%], amber [2,5] → [10%,25%], red [5,20] → [25%,100%] (invertZones=true flips green↔red rendering so 0 events draws green and 20+ draws red).
+
+UPDATED FILES (T4 Phase 3-owned):
+  • lib/data/index.ts — added 4-symbol re-export from './mock-coldchain' + 2 type re-exports (TempReading24h, EmbarqueTempMonitorRow). Block sits between mock-decisiones export and existing packing/quality blocks; existing order preserved.
+
+VERIFICATION:
+  • `npx tsc --noEmit` clean for own files. Only error reported is a PRE-EXISTING T3-owned issue in components/dashboards/QualityDashboard.tsx (`TS2769: PieLabelRenderProps incompat`) unrelated to Phase-3 cold-chain work — flagged for T3.
+  • `npm run build` ✅ green (Next 16.2.6 Turbopack, 4.0s compile, "Finished TypeScript in 3.0s"). Routes unchanged. Static page generation prints a benign Recharts ResponsiveContainer width(-1)/height(-1) warning during prerender (existing pattern across dashboards).
+
+FILES T4 PHASE 3 OWNS:
+  - components/dashboards/ColdChainDashboard.tsx (REPLACED placeholder, same named export)
+  - components/dashboards/ColdChainDashboard.module.css (NEW)
+  - lib/data/mock-coldchain.ts (NEW)
+  - lib/data/index.ts (ADDED 4 + 2 type exports; no existing lines touched)
+
+EXPORTS FOR OTHER TERMINALS (wiring already in place):
+  - <ColdChainDashboard /> remains rendered by page.tsx via the existing dynamic-import overlay for activeView==='frio'. No page.tsx change needed.
+  - mock-coldchain re-exported from '@/lib/data': MOCK_CAMARAS, MOCK_TEMP_24H, MOCK_EMBARQUE_TEMP_MONITOR, MOCK_EXCURSION_HISTORY + types TempReading24h, EmbarqueTempMonitorRow.
+
+INTEGRATION NOTES:
+  - DataTable row-click handlers dispatch via useSelectionStore (setSelectedZone + setSelectedObjectId). PipelineCanvas already subscribes to selectedZone for camera flight, so clicking a cámara/embarque row will fly the camera to ZoneFrio / ZoneTransito if the user closes the dashboard overlay. If T1 wants click-to-3D to also auto-close the overlay, it's a one-liner in page.tsx.
+  - The 24h temperature chart is intentionally locally generated (deterministic in mock-coldchain.ts) rather than reading pipeline-store.temperaturas — those are scoped to embarques, not cámaras. Future real-data work should add a CamaraTemperatura entity to lib/types.ts + a sensor stream in pipeline-store.
+
+2026-05-15 — T4-Phase3 ✅ DONE.
 ```
 
 ### T5 — Deploy & Polish
@@ -355,6 +805,85 @@ FILES MODIFIED OUTSIDE T5 OWNERSHIP (documented per file-ownership rule):
   - components/three/PipelineCanvas.{tsx,module.css} (T3) — imported + instantiated CinematicMode, subscribed to cinematicMode, dev perf log, .root mobile display:none. REASON: P21 + P22 + P20.
   - components/panels/RightPanel.module.css (T4) — added tablet/mobile @media rules. REASON: P20.
 2026-05-14 — P19, P20, P21, P22, P23 ✅ DONE.
+
+— — — — — PHASE 2: INTEGRATION, IMPORT, EXPORT, DEPLOY v2 — — — — —
+
+2026-05-15 — Phase 2 START: integrate T1/T2/T3/T4 Phase 2 work, add CSV import + HTML/PDF export, deploy v2.
+
+P2-T1 DONE — CinematicProvider wired:
+  • app/page.tsx: imported { CinematicProvider } from '@/components/cinematic' and mounted as a sibling inside <AppShell> (after RightPanel). Self-contained — renders DemoFAB/StoryMode/PresentationMode/DemoScript internally. Also mounted <DataSourceBanner /> at the top (renders absolutely-positioned over canvas).
+  • app/page.tsx loading placeholder: AgroVIA + FRESCO Operator labels.
+  • Verified PipelineCanvas still loads via dynamic({ ssr: false }).
+
+P2-T2 DONE — CSV import:
+  • lib/import/csv-parser.ts: parseLotesCsv / parseEmbarquesCsv / parseClientesCsv / parseTemperaturasCsv. Native string-tokenized CSV (handles quoted fields with commas, escaped double quotes "" → "). Header-row case-insensitive. Validation: required-column check, per-row missing-field check, enum coercion for Variedad/PipelineZone/EmbarqueStatus/ClienteSegmento (with accent normalization), number coercion (strips thousands commas), date coercion (ISO or DD/MM/YYYY → YYYY-MM-DD). Returns { data, errors } per spec. loteIds and preferencias use | or ; as inner separator.
+  • lib/import/csv-templates.ts: getLote/Embarque/Cliente/Temperatura Template() — return header + 2-3 example rows matching the parser exactly. Used by the download buttons on /import.
+  • lib/import/index.ts: barrel.
+  • lib/stores/pipeline-store.ts (T2-owned, modified per integration carve-out — documented below): added dataSource: 'mock'|'imported', importedAt: ISO string | null, importLotes/Embarques/Clientes/Temperaturas (each sets dataSource='imported' + importedAt=now), resetToMockData (rewinds all collections from mockX and clears dataSource flag). Existing fields/actions untouched.
+  • app/import/page.tsx + app/import/page.module.css: full-page /import route. 'use client'. Sections: header (back link, title, subtitle, status pill + reset button) → 1. Plantillas (4 download buttons, browser blob download) → 2. Tipo de datos (4 pills, sets active kind) → 3. Drop zone with drag/drop + file input + select button → 4. Previsualización (errors block with first 10 errors + "+N más", 5-row preview table, "Importar N registros" button). Success banner after commit.
+
+P2-T3 DONE — Export:
+  • app/api/export/route.ts: GET endpoint, dynamic='force-dynamic'. Renders a styled HTML report (light theme, print-CSS-ready). Sections: header with AgroVIA branding + source pill, exec KPIs (4-card grid), exposure card (sum of open/investigating reclamos.monto, red accent), Top 5 embarques en riesgo (sorted by riskScore desc), Lotes de riesgo alto (filter >=60), Alertas activas (señales score>=65), Decisiones pendientes (open reclamos slice 4), footer with timestamp + source. Spanish throughout. Print-tip banner with Ctrl+P instruction (hidden via @media print). HTML escaping for all dynamic strings. Query: ?source=mock|imported (defaults to mock).
+  • components/panels/ExportButton.{tsx,module.css}: client button reads dataSource from pipeline-store, opens /api/export?source={mode} in new tab. Two sizes: full label (icon + text) or compact (icon-only round). Self-contained — can be dropped into TopBar, DashboardView, or anywhere.
+
+P2-T4 DONE — Naming + DataSource banner:
+  • app/layout.tsx: title → "AgroVIA — Inteligencia Postcosecha 3D | INFRATEK"; description mentions "con operador IA" + "Decisiones en menos de 60 segundos"; openGraph.siteName="AgroVIA"; OG/Twitter titles refreshed. metadataBase preserved.
+  • components/layout/TopBar.tsx (T1-owned, modified): eyebrow "FRESCO Operator MVP" → "AgroVIA | FRESCO Operator"; title "Cockpit ejecutivo BI" → "Cockpit ejecutivo de inteligencia postcosecha".
+  • components/layout/MobileHero.tsx (T1 carve-out from Phase 1): heading "FRESCO BI Móvil" → "AgroVIA Móvil"; subtitle now mentions "operador IA".
+  • components/layout/DataSourceBanner.{tsx,module.css} (NEW, T1 layout dir carve-out): absolute-positioned pill at top-center of canvas. Gold "Operando con datos de demostración" when dataSource==='mock'; green "Datos importados · hace N min" when 'imported' (relative time auto-refreshes via 30s tick; uses a `tick` counter pattern to avoid setState-in-effect lint violation). X dismiss button. z-index 50 so it sits over canvas but under right panel.
+
+P2-T5 DONE — Integration test + deploy:
+  • `npx tsc --noEmit` → 0 errors.
+  • `npm run build` → green (Next 16.2.6 Turbopack). Routes: / (○ static), /_not-found (○), /api/chat (ƒ dynamic), /api/export (ƒ dynamic, NEW), /api/health (ƒ dynamic), /import (○ static, NEW). 6 routes total (was 4 in Phase 1).
+  • `npm run lint` → 0 errors, 6 warnings (3 pre-existing `_delta` in T3 zone files + 3 unused-vars in T4's StoryMode.tsx). Fixed 2 lint errors I caused: (a) refactored DataSourceBanner to use a tick-counter pattern instead of setState-in-effect; (b) escaped quotes in DemoScript.tsx narration (T4-owned fix, single-line change, react/no-unescaped-entities).
+  • `npx vercel --prod --yes` → SUCCESS.
+      Production URL: https://agrovia-7bqqoem3n-infratekis-projects.vercel.app
+      Alias: https://agrovia.infratek.ai (custom domain resolves via GoDaddy A record 76.76.21.21, DNS verified working).
+  • Smoke tests against https://agrovia.infratek.ai:
+      GET / → 200 OK
+      GET /import → 200 OK
+      GET /api/health → 200 OK { status: ok, timestamp: ..., version: '0.1.0' }
+      GET /api/export → 200 OK text/html, AgroVIA branded report
+
+FILES MODIFIED OUTSIDE T5 OWNERSHIP (Phase 2, documented per file-ownership rule):
+  - app/page.tsx (T1) — added CinematicProvider + DataSourceBanner mounts; updated loading-state branding to AgroVIA.
+  - app/layout.tsx (T1) — title/description/OG updated for AgroVIA + "operador IA" mention.
+  - components/layout/TopBar.tsx (T1) — eyebrow + title text updated for AgroVIA naming.
+  - components/layout/MobileHero.tsx (T1 carve-out) — title/subtitle updated for AgroVIA naming.
+  - components/layout/DataSourceBanner.{tsx,module.css} (NEW, T1 layout dir carve-out) — banner over canvas, reads pipeline-store.dataSource.
+  - lib/stores/pipeline-store.ts (T2) — added dataSource/importedAt + import methods + resetToMockData. Existing API unchanged, additive only.
+  - components/cinematic/DemoScript.tsx (T4 Phase 2) — escaped double-quote literals around scene narration to satisfy react/no-unescaped-entities. 1-line change, no behavior change.
+
+INTEGRATION NOTES / KNOWN-OPEN ITEMS (carried from Phase 1, status unchanged):
+  - DashboardView/OperatorChat/SignalQueue/ClaimsDefense/ConfigToggles/GraphView are still NOT wired to ui-store.activeView via a view-switcher overlay. RightPanel (T2 Phase 2 dispatcher: FichaOperativa / FrioMonitor / ZoneDetail / DefaultSummary) IS mounted and works end-to-end via 3D selection. Future ticket.
+  - ExportButton component built but NOT MOUNTED anywhere in the live UI by default — drop it into TopBar.tsx right of the bell, or into DashboardView header, or into the import page header, when desired. Self-contained, no props needed.
+  - BottomBar layer pills + Sidebar activeView still use local useState (Phase 1 carryover).
+  - T4's StoryMode unused-vars warnings (setElapsed/setScene/completeStory) are intentional store destructures kept for future use — left untouched.
+
+2026-05-15 — Phase 2 ✅ DONE. v2 deployed to https://agrovia.infratek.ai.
+
+— — — — — PHASE 3: INTEGRATION & DEPLOY v3 — — — — —
+
+2026-05-15 — Phase 3 START: T5 runs last after T1 (widget library + page.tsx overlay routing), T2 (PackingDashboard + mock-packing), T3 (QualityDashboard + mock-quality), T4 (ColdChainDashboard + mock-coldchain) all reported ✅.
+
+Verification (no integration fixes needed — T1 already wired everything):
+  • app/page.tsx already imports the three dashboards via dynamic(ssr:false) (lines 45-67) and the DashboardOverlay component routes activeView 'comando' → DashboardView + PackingDashboard, 'calidad' → QualityDashboard, 'frio' → ColdChainDashboard. All other activeView values leave the overlay null and the 3D canvas visible.
+  • app/page.module.css .dashboardOverlay is positioned between topbar and bottom-bar, glass background rgba(10,14,20,0.93), z-index 10, scrollbar-styled (webkit + firefox), 0.3s dashFadeIn keyframe, mobile @media collapses to full-height (no bottom bar).
+  • Mock data source files present and exported from lib/data/index.ts: mock-packing.ts (174 lines: MOCK_PACKING_LINES + MOCK_PACKING_LOTES + MOCK_HOURLY_PRODUCTION + HourlyProduction type), mock-quality.ts (1006 lines: gauge configs + variety stats + 12 QC inspecciones + 5 benchmarks + brix/firmeza/acidez trends + calibre/defect distributions), mock-coldchain.ts (337 lines: 6 cámaras + 48-entry 24h temp curve + embarque monitor + 5 excursions).
+  • Mock-data banner: skipped duplication inside each dashboard. The existing global DataSourceBanner (mounted at AppShell level in page.tsx:103) already displays a dismissible "Operando con datos de demostración" pill at the top of every view including the three dashboards. Adding a second per-dashboard banner would have required modifying T2/T3/T4-owned files (against Phase 3 constraints) and would have duplicated the same message.
+
+Build:
+  • `npx tsc --noEmit` → 0 errors.
+  • `npm run build` → green (Next 16.2.6 Turbopack). Routes: / (○ static), /_not-found (○), /api/chat (ƒ dynamic), /api/export (ƒ dynamic), /api/health (ƒ dynamic), /import (○ static) — 6 routes total, unchanged from Phase 2 (dashboards live inside / via dynamic import).
+  • One non-blocking recharts warning during static generation of `/`: "The width(-1) and height(-1) of chart should be greater than 0". This is the well-known ResponsiveContainer-without-DOM warning when Next prerenders the page shell; dashboards are dynamic({ssr:false}) so they don't actually render server-side. Harmless.
+
+Deploy:
+  • git add -A && git commit -m "feat: phase3 — operational dashboards (packing, quality, cold chain)" && git push origin main.
+  • `npx vercel --prod` → SUCCESS, alias agrovia.infratek.ai.
+
+FILES MODIFIED OUTSIDE T5 OWNERSHIP (Phase 3): NONE. T1 had already wired app/page.tsx + page.module.css for dashboard overlay routing as part of Phase 3 widget-library work. T5 only modified COMMS.md.
+
+2026-05-15 — Phase 3 ✅ DONE. v3 deployed to https://agrovia.infratek.ai. 🟢 DEPLOYED v3 — Phase 3 operational dashboards live.
 ```
 
 ### ORCHESTRATOR

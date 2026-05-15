@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 // === Zone & View Types ===
 export type PipelineZone =
   | 'cosecha'
@@ -188,4 +190,158 @@ export interface NavItem {
   id: NavViewId;
   label: string;
   iconName: string;
+}
+
+// === Decision Intelligence (Phase 2) ===
+export type RiskLevel = 'BAJO' | 'MEDIO' | 'ALTO' | 'CRÍTICO';
+export type FichaTargetType = 'zone' | 'embarque' | 'lote';
+export type DecisionUrgencia = 'alta' | 'media' | 'baja';
+export type DataConfidence = 'high' | 'medium' | 'low';
+
+export interface FichaResponsable {
+  nombre: string;
+  rol: string;
+  avatar?: string;
+}
+
+export interface FichaImpacto {
+  valorEmbarque: number;
+  probabilidadReclamo: number; // 0-1
+  montoEstimado: number;
+  moneda?: string;
+}
+
+export interface FichaOperativa {
+  id: string;
+  targetType: FichaTargetType;
+  targetId: string;
+  zona: PipelineZone;
+  riskScore: number; // 0-100
+  riskLabel: RiskLevel;
+  titulo: string;
+  resumenRiesgo: string;
+  causasProbables: string[];
+  accionesRecomendadas: string[];
+  responsable: FichaResponsable;
+  impacto: FichaImpacto;
+}
+
+export interface DecisionPendiente {
+  id: string;
+  urgencia: DecisionUrgencia;
+  descripcion: string;
+  fichaId: string;
+  responsable: string;
+  deadline: string; // ISO date
+}
+
+export interface DataSourceInfo {
+  source: string;
+  timestamp: string; // ISO
+  confidence: DataConfidence;
+  isMock?: boolean;
+}
+
+// === Packing Operations (Phase 3) ===
+export interface PackingLineStatus {
+  id: string;
+  linea: string;
+  turno: 'dia' | 'noche';
+  variedad: string;
+  cajasHora: number;
+  cajasHoraTarget: number;
+  rendimientoPct: number;
+  velocidadLinea: number;
+  cajasProducidas: number;
+  kgEntrada: number;
+  kgSalida: number;
+  horaInicio: string;
+  estado: 'activa' | 'pausa' | 'detenida' | 'mantenimiento';
+}
+
+export interface PackingLoteProcess {
+  id: string;
+  loteId: string;
+  variedad: string;
+  calibre: string;
+  horaEntrada: string;
+  horaSalida?: string;
+  cajasProducidas: number;
+  rendimientoPct: number;
+  descartePct: number;
+  defectos: string[];
+}
+
+// === Quality Control (Phase 3) ===
+export interface QCInspeccion {
+  id: string;
+  loteId: string;
+  variedad: string;
+  fecha: string;
+  inspector: string;
+  brix: number;
+  firmeza: number;
+  calibrePromedio: number;
+  calibreDistribucion: { rango: string; porcentaje: number }[];
+  defectosPct: number;
+  defectosTipo: { tipo: string; porcentaje: number }[];
+  resultado: 'aprobado' | 'aprobado-condicional' | 'rechazado';
+  notas: string;
+}
+
+export interface VarietyBenchmark {
+  variedad: string;
+  brixMin: number;
+  brixMax: number;
+  brixOptimo: number;
+  firmezaMin: number;
+  firmezaMax: number;
+  firmezaOptimo: number;
+  calibreRango: string;
+  tempOptima: number;
+  tempTolerance: number;
+  vidaUtilDias: number;
+}
+
+// === Cold Chain (Phase 3) ===
+export interface CamaraFrioStatus {
+  id: string;
+  nombre: string;
+  tempActual: number;
+  setPoint: number;
+  deltaTemp: number;
+  humedadPct: number;
+  palletsActuales: number;
+  palletsCapacidad: number;
+  horasOperacion: number;
+  estado: 'normal' | 'alerta' | 'critico' | 'apagada';
+  ultimaLectura: string;
+}
+
+export interface ExcursionEvent {
+  id: string;
+  fecha: string;
+  ubicacion: string;
+  duracion: string;
+  tempMax: number;
+  productoAfectado: string;
+  impacto: 'leve' | 'moderado' | 'severo';
+  accionTomada: string;
+}
+
+// === Widget Types (Phase 3) ===
+export interface ColumnDef {
+  key: string;
+  label: string;
+  sortable?: boolean;
+  type?: 'text' | 'number' | 'date' | 'badge' | 'mini-gauge';
+  width?: string;
+  align?: 'left' | 'center' | 'right';
+  render?: (value: unknown, row: unknown) => ReactNode;
+}
+
+export interface GaugeColorZones {
+  green: [number, number];
+  amber: [number, number];
+  red: [number, number];
 }

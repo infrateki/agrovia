@@ -12,23 +12,25 @@ const siteUrl = "https://agrovia.infratek.ai";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "FRESCO 3D Pipeline Intelligence | INFRATEK",
+  title: "AgroVIA — Inteligencia Postcosecha 3D | INFRATEK",
   description:
-    "Cockpit ejecutivo 3D para inteligencia postcosecha, reclamos y cadena de frío en agroexportación peruana.",
+    "Cockpit ejecutivo 3D para inteligencia postcosecha con operador IA. Decisiones en menos de 60 segundos: riesgo, reclamos y cadena de frío.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "FRESCO 3D Pipeline Intelligence",
-    description: "Cockpit ejecutivo 3D para inteligencia postcosecha",
+    title: "AgroVIA — Inteligencia Postcosecha 3D",
+    description:
+      "Cockpit ejecutivo 3D para inteligencia postcosecha con operador IA",
     url: siteUrl,
     type: "website",
-    siteName: "FRESCO",
+    siteName: "AgroVIA",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FRESCO 3D Pipeline Intelligence",
-    description: "Cockpit ejecutivo 3D para inteligencia postcosecha",
+    title: "AgroVIA — Inteligencia Postcosecha 3D",
+    description:
+      "Cockpit ejecutivo 3D para inteligencia postcosecha con operador IA",
   },
 };
 

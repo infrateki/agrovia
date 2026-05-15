@@ -1,63 +1,129 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Bot, Send } from 'lucide-react';
+import { Bot, RotateCcw, Send } from 'lucide-react';
 import { usePipelineStore } from '@/lib/stores/pipeline-store';
 import type { ChatMessage } from '@/lib/types';
+import { OperatorStreamError, streamChat } from '@/lib/operator';
 import styles from './OperatorChat.module.css';
 
-const MOCK_RESPONSES = [
-  'Estoy revisando los embarques activos. El S-8842 sigue siendo el de mayor riesgo: pico de 5.8 °C en día 4 y cliente sensible a blandura.',
-  'Recomiendo priorizar la carpeta de defensa de R-002 y agendar una llamada con el account manager antes del arribo.',
-  'Las señales SG-001 y SG-005 convergen sobre Walmart US — vale la pena un brief comercial antes del cierre del día.',
-  'Puedo generar el resumen ejecutivo con curva de temperatura, fotos QC y respuesta sugerida. ¿Procedo?',
+const HISTORY_LIMIT = 10;
+
+const QUICK_ASKS: Array<{ label: string; prompt: string }> = [
+  { label: '¿Qué embarques necesitan acción?', prompt: '¿Qué embarques necesitan acción hoy? Lista los 3 de mayor prioridad con la acción recomendada y responsable.' },
+  { label: 'Brief de S-8842', prompt: 'Brief ejecutivo del embarque S-8842 con estructura Situación → Riesgo → Causa → Acción → Responsable → Impacto Económico.' },
+  { label: 'Resumen del pipeline', prompt: 'Dame un resumen del estado del pipeline: cuántos embarques por zona, cuáles los críticos, y dónde se concentra el riesgo económico.' },
+  { label: 'Riesgo por cliente', prompt: 'Ránkea a los clientes por riesgo (score + reclamos abiertos + monto expuesto) y recomienda acción comercial para los 2 más críticos.' },
 ];
+
+interface LiveState {
+  /** Id of the in-progress assistant message bubble. */
+  msgId: string;
+  text: string;
+  abort: AbortController;
+}
+
+interface FailedSend {
+  text: string;
+  reason: string;
+}
 
 export function OperatorChat() {
   const chatMessages = usePipelineStore((s) => s.chatMessages);
   const addChatMessage = usePipelineStore((s) => s.addChatMessage);
   const [draft, setDraft] = useState('');
-  const [typing, setTyping] = useState(false);
+  const [live, setLive] = useState<LiveState | null>(null);
+  const [failed, setFailed] = useState<FailedSend | null>(null);
+  const [demoNotice, setDemoNotice] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
-    }
-  }, [chatMessages, typing]);
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [chatMessages, live]);
 
-  function handleSend() {
-    const text = draft.trim();
-    if (!text) return;
+  useEffect(() => {
+    return () => {
+      // Abort any in-flight stream on unmount
+      if (live) live.abort.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || live) return;
+    setFailed(null);
+
     const userMsg: ChatMessage = {
-      id: `M-${Date.now()}`,
+      id: `M-u-${Date.now()}`,
       role: 'user',
-      text,
+      text: trimmed,
       timestamp: new Date().toISOString(),
     };
     addChatMessage(userMsg);
-    setDraft('');
-    setTyping(true);
 
-    const reply = MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
-    window.setTimeout(() => {
+    const liveMsgId = `M-b-${Date.now() + 1}`;
+    const abort = new AbortController();
+    setLive({ msgId: liveMsgId, text: '', abort });
+
+    // Build history: existing messages + the user message we just appended
+    const history: ChatMessage[] = [...chatMessages, userMsg].slice(-HISTORY_LIMIT);
+
+    try {
+      const { chunks, mode } = await streamChat({ messages: history, signal: abort.signal });
+      if (mode === 'mock') setDemoNotice(true);
+
+      let acc = '';
+      let gotAny = false;
+      for await (const chunk of chunks) {
+        if (abort.signal.aborted) break;
+        acc += chunk;
+        gotAny = true;
+        setLive((prev) => (prev ? { ...prev, text: acc } : prev));
+      }
+      if (!gotAny) throw new OperatorStreamError(500, 'Stream vacío desde el operador');
+
       const botMsg: ChatMessage = {
-        id: `M-${Date.now() + 1}`,
+        id: liveMsgId,
         role: 'bot',
-        text: reply,
+        text: acc,
         timestamp: new Date().toISOString(),
       };
       addChatMessage(botMsg);
-      setTyping(false);
-    }, 1500);
+      setLive(null);
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') {
+        setLive(null);
+        return;
+      }
+      const reason =
+        err instanceof OperatorStreamError
+          ? `Error ${err.status}: ${err.message}`
+          : `Error de conexión — ${(err as Error).message}`;
+      setLive(null);
+      setFailed({ text: trimmed, reason });
+    }
+  }
+
+  function handleSendClick() {
+    const t = draft;
+    setDraft('');
+    void send(t);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSendClick();
     }
+  }
+
+  function retry() {
+    if (!failed) return;
+    const t = failed.text;
+    setFailed(null);
+    void send(t);
   }
 
   return (
@@ -70,7 +136,7 @@ export function OperatorChat() {
           <span className={styles.headerTitle}>FRESCO Operator</span>
           <span className={styles.headerStatus}>
             <span className={styles.statusDot} />
-            En línea · respondiendo
+            {demoNotice ? 'Modo demo · respuestas predefinidas' : 'En línea · respondiendo'}
           </span>
         </div>
       </div>
@@ -91,18 +157,55 @@ export function OperatorChat() {
             </div>
           </div>
         ))}
-        {typing ? (
+
+        {live ? (
           <div className={`${styles.row} ${styles.rowBot}`}>
             <span className={styles.botAvatar}>
               <Bot size={14} />
             </span>
-            <div className={`${styles.bubble} ${styles.bot} ${styles.typing}`}>
-              <span className={styles.dot} />
-              <span className={styles.dot} />
-              <span className={styles.dot} />
+            {live.text.length === 0 ? (
+              <div className={`${styles.bubble} ${styles.bot} ${styles.typing}`}>
+                <span className={styles.dot} />
+                <span className={styles.dot} />
+                <span className={styles.dot} />
+              </div>
+            ) : (
+              <div className={`${styles.bubble} ${styles.bot}`}>
+                {live.text}
+                <span className={styles.caret} aria-hidden="true" />
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {failed ? (
+          <div className={`${styles.row} ${styles.rowBot}`}>
+            <span className={styles.botAvatar}>
+              <Bot size={14} />
+            </span>
+            <div className={`${styles.bubble} ${styles.bot} ${styles.errorBubble}`}>
+              <div className={styles.errorText}>{failed.reason}</div>
+              <button type="button" className={styles.retry} onClick={retry}>
+                <RotateCcw size={12} />
+                Reintentar
+              </button>
             </div>
           </div>
         ) : null}
+      </div>
+
+      <div className={styles.quickAsks}>
+        {QUICK_ASKS.map((q) => (
+          <button
+            key={q.label}
+            type="button"
+            className={styles.quickAsk}
+            onClick={() => void send(q.prompt)}
+            disabled={Boolean(live)}
+          >
+            {q.label}
+          </button>
+        ))}
       </div>
 
       <div className={styles.inputRow}>
@@ -112,12 +215,13 @@ export function OperatorChat() {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="Pregúntale a FRESCO..."
+          disabled={Boolean(live)}
         />
         <button
           className={styles.send}
           type="button"
-          onClick={handleSend}
-          disabled={!draft.trim() || typing}
+          onClick={handleSendClick}
+          disabled={!draft.trim() || Boolean(live)}
         >
           <Send size={14} />
           Enviar

@@ -37,7 +37,12 @@
       "Bash(curl -sI --max-time 15 https://agrovia.infratek.ai)",
       "Bash(curl -s --max-time 15 https://agrovia.infratek.ai/api/health)",
       "Bash(curl -s --max-time 15 https://agrovia.infratek.ai)",
-      "Bash(curl -vsI --max-time 20 https://agrovia.infratek.ai)"
+      "Bash(curl -vsI --max-time 20 https://agrovia.infratek.ai)",
+      "Bash(curl -s --max-time 20 https://agrovia.infratek.ai/api/export)",
+      "Bash(curl -sI --max-time 15 https://agrovia.infratek.ai/import)",
+      "Bash(curl -sI --max-time 15 https://agrovia.infratek.ai/)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(git add *)"
     ]
   }
 }

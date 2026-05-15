@@ -1,0 +1,110 @@
+.card {
+  position: relative;
+  border-radius: var(--radius-card);
+  background: rgba(13, 17, 23, 0.55);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border-glass);
+  padding: 14px 14px 14px 18px;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.causa::before {
+  background: var(--color-alert-amber, #FF8800);
+}
+
+.accion::before {
+  background: var(--color-accent-green-light, #2D8B5E);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.causa .iconWrap {
+  background: rgba(255, 136, 0, 0.18);
+  color: var(--color-alert-amber, #FF8800);
+}
+
+.accion .iconWrap {
+  background: rgba(45, 139, 94, 0.22);
+  color: var(--color-accent-green-light, #2D8B5E);
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.bullet {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(45, 139, 94, 0.22);
+  color: var(--color-accent-green-light, #2D8B5E);
+  font-variant-numeric: tabular-nums;
+}
+
+.dot {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 8px;
+  background: var(--color-alert-amber, #FF8800);
+}
+
+.bulletList li {
+  align-items: flex-start;
+}

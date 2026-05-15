@@ -10,8 +10,8 @@ export function TopBar() {
   return (
     <div className={styles.topbar}>
       <div className={styles.left}>
-        <span className={styles.eyebrow}>FRESCO Operator MVP</span>
-        <span className={styles.title}>Cockpit ejecutivo BI</span>
+        <span className={styles.eyebrow}>AgroVIA | FRESCO Operator</span>
+        <span className={styles.title}>Cockpit ejecutivo de inteligencia postcosecha</span>
       </div>
 
       <div className={styles.center}>
