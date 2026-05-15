@@ -878,8 +878,9 @@ Build:
   • One non-blocking recharts warning during static generation of `/`: "The width(-1) and height(-1) of chart should be greater than 0". This is the well-known ResponsiveContainer-without-DOM warning when Next prerenders the page shell; dashboards are dynamic({ssr:false}) so they don't actually render server-side. Harmless.
 
 Deploy:
-  • git add -A && git commit -m "feat: phase3 — operational dashboards (packing, quality, cold chain)" && git push origin main.
-  • `npx vercel --prod` → SUCCESS, alias agrovia.infratek.ai.
+  • git add -A && git commit -m "feat: phase3 — operational dashboards (packing, quality, cold chain)" && git push origin main → commit 54f8c8b pushed to afb6514..54f8c8b.
+  • `npx vercel --prod --yes` → SUCCESS. Production URL: https://agrovia-e1qr7g55x-infratekis-projects.vercel.app · Alias: https://agrovia.infratek.ai · Build 15s · Deploy 29s.
+  • Smoke tests against https://agrovia.infratek.ai: GET / → 200, GET /api/health → 200 {"status":"ok","timestamp":"2026-05-15T23:25:25.491Z","version":"0.1.0"}.
 
 FILES MODIFIED OUTSIDE T5 OWNERSHIP (Phase 3): NONE. T1 had already wired app/page.tsx + page.module.css for dashboard overlay routing as part of Phase 3 widget-library work. T5 only modified COMMS.md.
 
