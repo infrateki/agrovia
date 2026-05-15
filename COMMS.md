@@ -938,9 +938,10 @@ BUILD:
   • One pre-existing recharts ResponsiveContainer warning during static prerender — same as Phase 3, harmless.
 
 DEPLOY:
-  • Single commit per spec.
-  • `git push origin main` → ok.
-  • `npx vercel --prod --yes` → ok. New production URL + alias agrovia.infratek.ai recorded below.
+  • Single commit `6ae62ee` "feat(phase4): frosted glass top navbar + contextual detail panel + 3D view routing".
+  • `git push origin main` → 27d16ce..6ae62ee.
+  • `npx vercel --prod --yes` → SUCCESS. Production URL: https://agrovia-qjxkfuldc-infratekis-projects.vercel.app · Alias: https://agrovia.infratek.ai · Build 16s · Deploy 29s.
+  • Smoke: GET / → 200, GET /api/health → 200 {"status":"ok","timestamp":"2026-05-15T23:48:19.898Z","version":"0.1.0"}.
 
 DEFERRED / TODO:
   • `cuentas` and `social` are EmptyView placeholders — content is the next iteration.
