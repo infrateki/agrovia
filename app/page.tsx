@@ -64,6 +64,22 @@ const OperationsSimView = dynamic(
   { ssr: false, loading: () => <DashboardLoading /> },
 );
 
+const DataGridView = dynamic(
+  () =>
+    import("@/components/dashboards/DataGridView").then((m) => ({
+      default: m.DataGridView,
+    })),
+  { ssr: false, loading: () => <DashboardLoading /> },
+);
+
+const SchemaView = dynamic(
+  () =>
+    import("@/components/dashboards/SchemaView").then((m) => ({
+      default: m.SchemaView,
+    })),
+  { ssr: false, loading: () => <DashboardLoading /> },
+);
+
 function ScrollableContent({ children }: { children: React.ReactNode }) {
   return <div className={styles.scrollPane}>{children}</div>;
 }
@@ -119,8 +135,12 @@ function ViewRouter() {
       );
     case "sim":
       return <OperationsSimView />;
+    case "data-grid":
+      return <DataGridView />;
     case "grafo":
       return <GraphIntelligenceView />;
+    case "schema":
+      return <SchemaView />;
     case "config":
       return (
         <div className={styles.panelWrap}>
@@ -138,7 +158,13 @@ function DetailMount() {
   const selectedShipmentId = useUiStore((s) => s.selectedShipmentId);
   const closeDetail = useUiStore((s) => s.closeDetail);
 
-  if (activeView === "grafo" || activeView === "sim") return null;
+  if (
+    activeView === "grafo" ||
+    activeView === "sim" ||
+    activeView === "data-grid" ||
+    activeView === "schema"
+  )
+    return null;
   if (!detailPanelOpen || !selectedShipmentId) return null;
 
   return (

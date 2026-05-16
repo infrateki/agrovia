@@ -36,7 +36,9 @@ export type NavViewId =
   | 'radar'
   | 'social'
   | 'sim'
+  | 'data-grid'
   | 'grafo'
+  | 'schema'
   | 'config';
 
 export type Variedad = 'arandano' | 'uva' | 'palta' | 'mango' | 'citricos';

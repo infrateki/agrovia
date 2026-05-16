@@ -77,6 +77,9 @@ npm run lint         # Lint
 3. Update your section in COMMS.md with status and notes
 4. If you created new exports other terminals need, note them in COMMS.md
 
+### Architecture registry (Phase 6+)
+Any new entity, source, endpoint, storage target, or BI integration MUST be registered in `lib/architecture/schema-map.ts` in the same commit it's introduced. The SCHEMA tab is the canonical view of project structure — if it's not in the registry, it doesn't exist. Update `consumes`/`exposes` so the Flow and Maturity views stay correct.
+
 ### Mistakes to avoid
 - Don't use default exports; use named exports everywhere
 - Don't import Three.js at module level in server components — always behind dynamic()

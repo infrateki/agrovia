@@ -1,0 +1,145 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  padding: 14px 22px;
+  background: var(--color-glass-04);
+  backdrop-filter: var(--glass-blur-2xl);
+  -webkit-backdrop-filter: var(--glass-blur-2xl);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  color: var(--color-text-warm);
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--color-warm-gold);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: var(--color-text-warm-60);
+  letter-spacing: 0.04em;
+}
+
+.modes {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9999px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+}
+
+.modeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-warm-60);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background-color 160ms ease, color 160ms ease;
+  white-space: nowrap;
+}
+
+.modeBtn:hover {
+  background: var(--color-glass-05);
+  color: var(--color-text-warm);
+}
+
+.modeActive {
+  background: var(--color-glass-08);
+  color: var(--color-warm-gold);
+  border-color: rgba(212, 184, 138, 0.22);
+}
+
+.modeActive:hover {
+  background: var(--color-glass-08);
+  color: var(--color-warm-gold);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--color-text-warm-60);
+  letter-spacing: 0.04em;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legendLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.legendCount {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-warm);
+  font-weight: 500;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+  border-radius: 9999px;
+  padding: 1px 7px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.layerSummary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.layerChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.layerChipLabel {
+  color: var(--color-text-warm-60);
+  text-transform: uppercase;
+}
+
+.layerChipCount {
+  color: var(--color-text-warm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}

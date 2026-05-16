@@ -1,0 +1,195 @@
+.root {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 22px;
+  background: var(--color-bg-main);
+}
+
+.lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.lane {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  gap: 14px;
+  align-items: stretch;
+  padding: 14px;
+  background: var(--color-glass-04);
+  backdrop-filter: var(--glass-blur-2xl);
+  -webkit-backdrop-filter: var(--glass-blur-2xl);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: 14px;
+}
+
+.laneHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 8px 6px 6px;
+  border-right: 1px solid var(--color-hairline-soft);
+}
+
+.laneTitle {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-warm-gold);
+  margin: 0;
+}
+
+.laneCount {
+  font-size: 24px;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  color: var(--color-text-warm);
+  font-variant-numeric: tabular-nums;
+}
+
+.laneBody {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.empty {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-text-warm-40);
+  letter-spacing: 0.06em;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 224px;
+  padding: 10px 12px 12px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+  border-radius: 10px;
+  text-align: left;
+  color: var(--color-text-warm);
+  transition: transform 160ms ease, border-color 160ms ease,
+    background-color 160ms ease, opacity 160ms ease;
+}
+
+.card:hover {
+  background: var(--color-glass-05);
+  border-color: rgba(212, 184, 138, 0.22);
+  transform: translateY(-1px);
+}
+
+.cardSelected {
+  border-color: var(--color-warm-gold);
+  background: var(--color-glass-08);
+}
+
+.cardHover {
+  border-color: rgba(212, 184, 138, 0.4);
+}
+
+.cardDim {
+  opacity: 0.35;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cardLabel {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-text-warm);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.techBadge {
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-text-warm-60);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--color-text-warm-60);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.statusPill {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-warm-60);
+  background: var(--color-glass-04);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-hairline);
+}
+
+.phasePill {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--color-warm-gold);
+  background: rgba(212, 184, 138, 0.1);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 184, 138, 0.22);
+}
+
+@media (max-width: 980px) {
+  .lane {
+    grid-template-columns: 1fr;
+  }
+  .laneHead {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-right: none;
+    border-bottom: 1px solid var(--color-hairline-soft);
+    padding-bottom: 8px;
+  }
+  .laneCount {
+    font-size: 18px;
+  }
+}

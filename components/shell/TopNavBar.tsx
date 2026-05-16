@@ -26,7 +26,17 @@ const NAV_LINKS: NavLink[] = [
     label: 'SIM',
     tooltip: 'Simulación de planta · Cosecha → Llegada',
   },
+  {
+    id: 'data-grid',
+    label: 'DATA GRID',
+    tooltip: 'Ontología en layout dagre LR · 12 tipos · 14 relaciones',
+  },
   { id: 'grafo', label: 'Grafo' },
+  {
+    id: 'schema',
+    label: 'SCHEMA',
+    tooltip: 'Arquitectura de datos · Stack · ERD · Flow · Maturity',
+  },
   { id: 'config', label: 'Config' },
 ];
 
