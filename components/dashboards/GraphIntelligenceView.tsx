@@ -24,8 +24,10 @@ import '@xyflow/react/dist/style.css';
 import { EntityNode, type EntityNodeData } from '@/components/graph/EntityNode';
 import { RelationshipEdge, type RelationshipEdgeData } from '@/components/graph/RelationshipEdge';
 import { GraphToolbar } from '@/components/graph/GraphToolbar';
-import { NodeDetailPanel } from '@/components/graph/NodeDetailPanel';
-import { ShipmentDetailPanel } from '@/components/panels/ShipmentDetailPanel';
+import {
+  GraphElementModal,
+  resolveModalElement,
+} from '@/components/graph/GraphElementModal';
 import {
   GRAPH_EDGES,
   GRAPH_NODES,
@@ -35,6 +37,7 @@ import {
   type GraphNodeData,
 } from '@/lib/data/mock-graph';
 import { invalidateLayoutCache, layoutGraph } from '@/lib/graph/layout';
+import { getNodeAccent } from '@/lib/ontology/schema';
 import { useUiStore } from '@/lib/stores/ui-store';
 import type { NodeKind } from '@/lib/ontology/schema';
 import styles from './GraphIntelligenceView.module.css';
@@ -49,6 +52,28 @@ interface BuildArgs {
   visibleTypes: Set<NodeKind>;
   search: string;
   selectedNodeId: string | null;
+}
+
+// Group edges by their unordered (source, target) pair so we can assign each
+// edge an index within its parallel group. The RelationshipEdge uses this
+// pair (index, count) to fan curves out instead of stacking.
+function indexParallelEdges(edges: GraphEdgeData[]) {
+  const groups = new Map<string, GraphEdgeData[]>();
+  for (const e of edges) {
+    // Use ordered key — directionality matters for layout but the visual
+    // overlap problem is the same for both directions, so we treat
+    // (a→b) and (b→a) as separate groups (they'd render different markers).
+    const key = `${e.source}>${e.target}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(e);
+  }
+  const indexOf = new Map<string, { index: number; count: number }>();
+  for (const arr of groups.values()) {
+    arr.forEach((e, i) => {
+      indexOf.set(e.id, { index: i, count: arr.length });
+    });
+  }
+  return indexOf;
 }
 
 function buildFlow({
@@ -95,23 +120,32 @@ function buildFlow({
     };
   });
 
+  const parallelIndex = indexParallelEdges(filteredEdges);
+
   const rfEdges: Edge[] = filteredEdges.map((e) => {
     const highlighted =
       selectedNodeId != null &&
       (e.source === selectedNodeId || e.target === selectedNodeId);
+    const info = parallelIndex.get(e.id) ?? { index: 0, count: 1 };
+    const markerColor = highlighted
+      ? 'rgba(212,184,138,1)'
+      : 'rgba(245,240,232,0.55)';
     return {
       id: e.id,
       source: e.source,
       target: e.target,
       type: 'relationship',
-      data: { kind: e.kind, highlighted } as RelationshipEdgeData,
+      data: {
+        kind: e.kind,
+        highlighted,
+        parallelIndex: info.index,
+        parallelCount: info.count,
+      } as RelationshipEdgeData,
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        width: 14,
-        height: 14,
-        color: highlighted
-          ? 'rgba(212,184,138,1)'
-          : 'rgba(245,240,232,0.35)',
+        width: 22,
+        height: 22,
+        color: markerColor,
       },
     };
   });
@@ -126,15 +160,13 @@ function GraphInner() {
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const graphVisibleTypes = useUiStore((s) => s.graphVisibleTypes);
   const toggleGraphType = useUiStore((s) => s.toggleGraphType);
-  const openDetail = useUiStore((s) => s.openDetail);
-  const detailPanelOpen = useUiStore((s) => s.detailPanelOpen);
-  const selectedShipmentId = useUiStore((s) => s.selectedShipmentId);
-  const closeDetail = useUiStore((s) => s.closeDetail);
+  const graphModalTarget = useUiStore((s) => s.graphModalTarget);
+  const openGraphModal = useUiStore((s) => s.openGraphModal);
+  const closeGraphModal = useUiStore((s) => s.closeGraphModal);
 
   const [search, setSearch] = useState('');
   // Bumping this tick triggers fitView via the `key` prop on ReactFlow when
-  // the user clicks Re-layout, since fitView itself isn't a method on the
-  // declarative API at this version.
+  // the user clicks Re-layout.
   const [layoutTick, setLayoutTick] = useState(0);
 
   const sourceData = useMemo<{
@@ -152,7 +184,6 @@ function GraphInner() {
     if (graphLayer === 'instance') {
       return { nodes: GRAPH_NODES, edges: GRAPH_EDGES, bucket: 'instance' };
     }
-    // Híbrido — overlay ontology + instance with extra IS_A edges.
     return {
       nodes: [...ONTOLOGY_NODES, ...GRAPH_NODES],
       edges: [...ONTOLOGY_EDGES, ...GRAPH_EDGES],
@@ -182,30 +213,30 @@ function GraphInner() {
     setEdges(rfEdges);
   }, [rfNodes, rfEdges, setNodes, setEdges]);
 
-  // Bridge Shipment node clicks into the existing detail panel flow.
+  // ─── Click handlers ───
+  // Phase 6.5: clicking a node or edge opens the centered modal. The old
+  // bridge to ShipmentDetailPanel is removed for GRAFO — the modal carries
+  // strictly more information (properties + relations + documents + source).
+
   const handleNodeClick: NodeMouseHandler = useCallback(
     (_e, node) => {
-      const d = node.data as EntityNodeData;
       selectGraphNode(node.id);
-      if (d.kind === 'Shipment') {
-        // Ontology placeholder for Shipment is "O-Shipment" — guard against
-        // opening the detail panel for the abstract type node.
-        if (!node.id.startsWith('O-')) {
-          openDetail(node.id);
-        }
-      }
+      openGraphModal({ kind: 'node', nodeId: node.id });
     },
-    [openDetail, selectGraphNode],
+    [selectGraphNode, openGraphModal],
   );
 
-  const handleEdgeClick: EdgeMouseHandler = useCallback(() => {
-    // Edges aren't selectable in our model; keep selection on the source.
-  }, []);
+  const handleEdgeClick: EdgeMouseHandler = useCallback(
+    (_e, edge) => {
+      openGraphModal({ kind: 'edge', edgeId: edge.id });
+    },
+    [openGraphModal],
+  );
 
   const handlePaneClick = useCallback(() => {
     selectGraphNode(null);
-    if (detailPanelOpen) closeDetail();
-  }, [selectGraphNode, detailPanelOpen, closeDetail]);
+    closeGraphModal();
+  }, [selectGraphNode, closeGraphModal]);
 
   const handleSelectionChange = useCallback(
     (params: OnSelectionChangeParams) => {
@@ -218,8 +249,6 @@ function GraphInner() {
 
   const handleRelayout = useCallback(() => {
     invalidateLayoutCache(sourceData.bucket);
-    // Force a re-build by nudging search (no-op string) — useMemo dependency
-    // is `search` so we re-trigger via a quick state churn.
     setSearch((s) => s);
     const { rfNodes: nn, rfEdges: ee } = buildFlow({
       nodes: sourceData.nodes,
@@ -232,23 +261,31 @@ function GraphInner() {
     setNodes(nn);
     setEdges(ee);
     setLayoutTick((t) => t + 1);
-  }, [sourceData, graphVisibleTypes, search, graphSelectedNodeId, setNodes, setEdges]);
+  }, [
+    sourceData,
+    graphVisibleTypes,
+    search,
+    graphSelectedNodeId,
+    setNodes,
+    setEdges,
+  ]);
 
-  // Reject any user-attempted connections — this is a read-only graph.
   const onConnect = useCallback((_c: Connection) => {}, []);
 
-  const selectedNodeData = useMemo<GraphNodeData | null>(() => {
-    if (!graphSelectedNodeId) return null;
-    return sourceData.nodes.find((n) => n.id === graphSelectedNodeId) ?? null;
-  }, [graphSelectedNodeId, sourceData.nodes]);
+  // ─── Modal resolution ───
+  const modalElement = useMemo(
+    () =>
+      resolveModalElement(graphModalTarget, sourceData.nodes, sourceData.edges),
+    [graphModalTarget, sourceData.nodes, sourceData.edges],
+  );
 
-  const showNodeDetail =
-    selectedNodeData != null &&
-    selectedNodeData.kind !== 'Shipment' &&
-    !graphSelectedNodeId?.startsWith('O-Shipment');
-
-  // For ontology-level non-Shipment nodes, fall through to NodeDetailPanel
-  // (covers the schema browsing case).
+  const handleModalNavigate = useCallback(
+    (nodeId: string) => {
+      openGraphModal({ kind: 'node', nodeId });
+      selectGraphNode(nodeId);
+    },
+    [openGraphModal, selectGraphNode],
+  );
 
   return (
     <div className={styles.root} role="region" aria-label="Inteligencia de Grafo">
@@ -297,15 +334,7 @@ function GraphInner() {
             nodeColor={(n) => {
               const d = n.data as EntityNodeData | undefined;
               if (!d) return 'rgba(245,240,232,0.3)';
-              // Use the accent color of the node kind in the minimap.
-              try {
-                // Import-locally to avoid a top-level type-only cycle.
-                // eslint-disable-next-line @typescript-eslint/no-require-imports
-                const { getNodeAccent } = require('@/lib/ontology/schema') as typeof import('@/lib/ontology/schema');
-                return getNodeAccent(d.kind);
-              } catch {
-                return 'rgba(245,240,232,0.4)';
-              }
+              return getNodeAccent(d.kind);
             }}
             maskColor="rgba(0,0,0,0.45)"
           />
@@ -313,22 +342,13 @@ function GraphInner() {
         </ReactFlow>
       </div>
 
-      {showNodeDetail && selectedNodeData && (
-        <NodeDetailPanel
-          node={selectedNodeData}
-          onClose={() => selectGraphNode(null)}
-        />
-      )}
-
-      {detailPanelOpen && selectedShipmentId && (
-        <ShipmentDetailPanel
-          id={selectedShipmentId}
-          onClose={() => {
-            closeDetail();
-            selectGraphNode(null);
-          }}
-        />
-      )}
+      <GraphElementModal
+        element={modalElement}
+        onClose={closeGraphModal}
+        onNavigate={handleModalNavigate}
+        allNodes={sourceData.nodes}
+        allEdges={sourceData.edges}
+      />
     </div>
   );
 }

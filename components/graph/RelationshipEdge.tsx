@@ -1,19 +1,36 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
-  getStraightPath,
+  getBezierPath,
   type EdgeProps,
 } from '@xyflow/react';
+import { useUiStore } from '@/lib/stores/ui-store';
 import type { EdgeKind } from '@/lib/ontology/schema';
 import styles from './RelationshipEdge.module.css';
 
 export interface RelationshipEdgeData {
   kind: EdgeKind;
   highlighted?: boolean;
+  // Index of this edge within the (source,target) parallel group, plus
+  // the total group size. Used to fan out duplicate edges with different
+  // curvature so they don't stack.
+  parallelIndex?: number;
+  parallelCount?: number;
   [key: string]: unknown;
+}
+
+// Convert (index, count) into a curvature delta in [-0.45, +0.45]. The base
+// curvature is added on top in render.
+function parallelCurvature(index: number, count: number): number {
+  if (count <= 1) return 0;
+  // Spread evenly across the band, centered on 0. With count=3 we get
+  // [-0.3, 0, +0.3]; with count=5 we get [-0.45, -0.225, 0, +0.225, +0.45].
+  const max = 0.45;
+  const step = (max * 2) / (count - 1);
+  return -max + step * index;
 }
 
 function RelationshipEdgeImpl({
@@ -22,6 +39,8 @@ function RelationshipEdgeImpl({
   sourceY,
   targetX,
   targetY,
+  sourcePosition,
+  targetPosition,
   markerEnd,
   data,
   selected,
@@ -30,28 +49,33 @@ function RelationshipEdgeImpl({
     kind: 'ATTACHED' as EdgeKind,
   };
 
-  // Straight line lets the force-directed layout breathe; smoothstep was
-  // designed for the LR hierarchy that's gone now.
-  const [edgePath, labelX, labelY] = getStraightPath({
+  const openGraphModal = useUiStore((s) => s.openGraphModal);
+
+  // Curve every edge a little (0.25 base) so even isolated edges feel less
+  // mechanical, then layer the parallel-group offset on top.
+  const curvature =
+    0.25 +
+    parallelCurvature(d.parallelIndex ?? 0, d.parallelCount ?? 1);
+
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
+    sourcePosition,
     targetX,
     targetY,
+    targetPosition,
+    curvature,
   });
 
   const highlighted = Boolean(d.highlighted || selected);
 
-  // Rotate the label when the edge is steep enough that horizontal text
-  // would collide with the line. 25° threshold per the brief.
-  const dx = targetX - sourceX;
-  const dy = targetY - sourceY;
-  const angleDeg = Math.atan2(dy, dx) * (180 / Math.PI);
-  // Normalize so the text isn't upside-down.
-  let rotate = angleDeg;
-  if (rotate > 90) rotate -= 180;
-  else if (rotate < -90) rotate += 180;
-  const shouldRotate = Math.abs(angleDeg) > 25 && Math.abs(angleDeg) < 155;
-  const rotateRule = shouldRotate ? `rotate(${rotate}deg)` : '';
+  const onLabelClick = useCallback(
+    (e: ReactMouseEvent) => {
+      e.stopPropagation();
+      openGraphModal({ kind: 'edge', edgeId: id });
+    },
+    [openGraphModal, id],
+  );
 
   return (
     <>
@@ -59,18 +83,37 @@ function RelationshipEdgeImpl({
         id={id}
         path={edgePath}
         markerEnd={markerEnd}
-        className={[styles.edge, highlighted ? styles.edgeOn : '']
+        className={[
+          styles.edge,
+          highlighted ? styles.edgeOn : '',
+          highlighted ? styles.edgeFlow : '',
+        ]
           .filter(Boolean)
           .join(' ')}
         aria-label={d.kind}
       />
       <EdgeLabelRenderer>
         <div
-          className={[styles.labelPill, highlighted ? styles.labelPillOn : '']
+          className={[
+            styles.label,
+            highlighted ? styles.labelHighlighted : '',
+          ]
             .filter(Boolean)
             .join(' ')}
           style={{
-            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px) ${rotateRule}`,
+            position: 'absolute',
+            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            pointerEvents: 'all',
+          }}
+          onClick={onLabelClick}
+          role="button"
+          tabIndex={0}
+          aria-label={`Relación ${d.kind}`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openGraphModal({ kind: 'edge', edgeId: id });
+            }
           }}
         >
           {d.kind}

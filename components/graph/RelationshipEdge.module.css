@@ -1,5 +1,5 @@
 .edge {
-  stroke: rgba(245, 240, 232, 0.4);
+  stroke: var(--graph-edge-default, rgba(245, 240, 232, 0.5));
   stroke-width: 1.5;
   fill: none;
   transition: stroke 180ms ease, stroke-width 180ms ease;
@@ -7,38 +7,72 @@
 
 .edgeOn {
   stroke: var(--color-warm-gold);
-  stroke-width: 2;
+  stroke-width: 2.5;
 }
 
-/* Light theme: darker default stroke so edges stay visible on cream. */
+.edgeFlow {
+  stroke-dasharray: 8 4;
+  animation: edgeFlow 1.2s linear infinite;
+}
+
+@keyframes edgeFlow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+/* Light theme uses a much darker default stroke since the canvas is cream. */
 :root[data-theme='light'] .edge {
-  stroke: rgba(58, 46, 28, 0.45);
+  stroke: var(--graph-edge-default, rgba(58, 46, 28, 0.5));
 }
 
-.labelPill {
-  position: absolute;
-  font-size: 0.65rem;
+.label {
+  font-size: 0.6rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-warm);
+  color: var(--color-text-warm-60);
+  /* Lighter pill — the surrounding halo blends the label into the canvas
+     instead of stamping a heavy black chip onto it. */
   background: var(--color-bg-main);
-  border: 1px solid var(--color-hairline-soft);
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 9999px;
-  pointer-events: none;
+  border: 1px solid var(--color-hairline-soft);
   white-space: nowrap;
-  transition: color 180ms ease, border-color 180ms ease;
-  /* Keep text upright relative to its rotated transform. */
-  transform-origin: center;
+  box-shadow: 0 0 14px var(--color-bg-main);
+  cursor: pointer;
+  user-select: none;
+  transition: color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  outline: none;
 }
 
-:root[data-theme='light'] .labelPill {
+.label:hover {
+  color: var(--color-warm-gold);
+  border-color: var(--color-warm-gold);
+  box-shadow: 0 0 18px var(--color-bg-main);
+}
+
+.label:focus-visible {
+  color: var(--color-warm-gold);
+  border-color: var(--color-warm-gold);
+  box-shadow: 0 0 0 3px rgba(212, 184, 138, 0.18),
+    0 0 14px var(--color-bg-main);
+}
+
+.labelHighlighted {
+  color: var(--color-warm-gold);
+  border-color: var(--color-warm-gold);
+}
+
+:root[data-theme='light'] .label {
   color: var(--color-text-primary);
   background: var(--color-bg-main);
   border-color: var(--color-hairline);
+  box-shadow: 0 0 14px var(--color-bg-main);
 }
 
-.labelPillOn {
+:root[data-theme='light'] .label:hover,
+:root[data-theme='light'] .labelHighlighted {
   color: var(--color-warm-gold);
-  border-color: rgba(212, 184, 138, 0.4);
+  border-color: var(--color-warm-gold);
 }

@@ -5,6 +5,10 @@ import type { LayerVisibility, NavViewId, ViewMode } from '../types';
 
 export type GraphLayer = 'ontology' | 'instance' | 'hybrid';
 export type ThemeMode = 'dark' | 'light';
+export type GraphModalTarget =
+  | { kind: 'node'; nodeId: string }
+  | { kind: 'edge'; edgeId: string }
+  | null;
 
 interface UiState {
   activeView: NavViewId;
@@ -34,6 +38,11 @@ interface UiState {
   setGraphLayer: (l: GraphLayer) => void;
   selectGraphNode: (id: string | null) => void;
   toggleGraphType: (k: NodeKind) => void;
+
+  // Phase 6.5 — centered element modal (entity OR relationship)
+  graphModalTarget: GraphModalTarget;
+  openGraphModal: (t: GraphModalTarget) => void;
+  closeGraphModal: () => void;
 
   // Phase 5 — theme (dark / light)
   theme: ThemeMode;
@@ -79,6 +88,11 @@ export const useUiStore = create<UiState>((set) => ({
       else next.add(k);
       return { graphVisibleTypes: next };
     }),
+
+  // Phase 6.5
+  graphModalTarget: null,
+  openGraphModal: (t) => set({ graphModalTarget: t }),
+  closeGraphModal: () => set({ graphModalTarget: null }),
 
   // Phase 5 — theme. Initial value is dark; the FOUC-prevention <script>
   // in the document head reads localStorage and sets data-theme on <html>
