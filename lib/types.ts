@@ -35,6 +35,7 @@ export type NavViewId =
   | 'frio'
   | 'radar'
   | 'social'
+  | 'sim'
   | 'grafo'
   | 'config';
 

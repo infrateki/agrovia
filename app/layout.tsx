@@ -34,13 +34,20 @@ export const metadata: Metadata = {
   },
 };
 
+// Inline FOUC-prevention: read theme from localStorage and set data-theme
+// on <html> BEFORE first paint. Runs as a blocking script with no React.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('agrovia.theme');if(t!=='light'&&t!=='dark'){t='dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
+
 export function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="es" className={inter.variable} data-theme="dark">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>{children}</body>
     </html>
   );

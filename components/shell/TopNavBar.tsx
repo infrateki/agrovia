@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Bell, Menu, Search } from 'lucide-react';
 import { useUiStore } from '@/lib/stores/ui-store';
 import type { NavViewId } from '@/lib/types';
+import { ThemeToggle } from './ThemeToggle';
 import styles from './TopNavBar.module.css';
 
 interface NavLink {
   id: NavViewId;
   label: string;
+  tooltip?: string;
 }
 
 const NAV_LINKS: NavLink[] = [
@@ -19,6 +21,11 @@ const NAV_LINKS: NavLink[] = [
   { id: 'frio', label: 'Cadena de Frío' },
   { id: 'radar', label: 'Radar' },
   { id: 'social', label: 'Social' },
+  {
+    id: 'sim',
+    label: 'SIM',
+    tooltip: 'Simulación de planta · Cosecha → Llegada',
+  },
   { id: 'grafo', label: 'Grafo' },
   { id: 'config', label: 'Config' },
 ];
@@ -80,6 +87,7 @@ export function TopNavBar() {
                 className={`${styles.pill} ${active ? styles.pillActive : ''}`}
                 onClick={() => handleNav(link.id)}
                 aria-current={active ? 'page' : undefined}
+                title={link.tooltip}
               >
                 {link.label}
               </button>
@@ -105,6 +113,7 @@ export function TopNavBar() {
             <Bell size={14} strokeWidth={1.6} />
             <span className={styles.bellDot} aria-hidden="true" />
           </button>
+          <ThemeToggle />
           <div ref={avatarRef} style={{ position: 'relative' }}>
             <button
               type="button"

@@ -56,6 +56,14 @@ const GraphIntelligenceView = dynamic(
   { ssr: false, loading: () => <DashboardLoading /> },
 );
 
+const OperationsSimView = dynamic(
+  () =>
+    import("@/components/dashboards/OperationsSimView").then((m) => ({
+      default: m.OperationsSimView,
+    })),
+  { ssr: false, loading: () => <DashboardLoading /> },
+);
+
 function ScrollableContent({ children }: { children: React.ReactNode }) {
   return <div className={styles.scrollPane}>{children}</div>;
 }
@@ -109,6 +117,8 @@ function ViewRouter() {
           subtitle="Menciones, reviews y patrones de cliente en tiempo real. Próxima iteración."
         />
       );
+    case "sim":
+      return <OperationsSimView />;
     case "grafo":
       return <GraphIntelligenceView />;
     case "config":
@@ -128,7 +138,7 @@ function DetailMount() {
   const selectedShipmentId = useUiStore((s) => s.selectedShipmentId);
   const closeDetail = useUiStore((s) => s.closeDetail);
 
-  if (activeView === "grafo") return null;
+  if (activeView === "grafo" || activeView === "sim") return null;
   if (!detailPanelOpen || !selectedShipmentId) return null;
 
   return (

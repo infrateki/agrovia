@@ -45,9 +45,95 @@
   --glass-blur-2xl: blur(28px) saturate(140%);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   LIGHT THEME (Phase 5)
+   Hand-tuned to keep the old-money aesthetic: warm cream canvas, ink-on-paper
+   text, deeper gold accent, hairline browns instead of white glass. Glass
+   surfaces become near-white frosted instead of dark frosted. Every dark-mode
+   token has a light counterpart so component CSS works unchanged.
+   ───────────────────────────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  --color-bg-main: #f5f0e8;
+  --color-bg-sidebar: #ece5d8;
+  --color-bg-card: #ffffff;
+  --color-bg-glass: rgba(255, 252, 246, 0.78);
+  --color-border-glass: rgba(58, 46, 28, 0.1);
+
+  --color-text-primary: #2a2418;
+  --color-text-secondary: #6b5c44;
+  --color-text-muted: #9b8c72;
+
+  --color-accent-green: #2a5a3d;
+  --color-accent-green-light: #3a7a52;
+  --color-accent-gold: #a8843e;
+  --color-alert-red: #c14444;
+  --color-alert-amber: #b46d20;
+  --color-cold-blue: #2f6cb0;
+  --color-signal-purple: #5a4cb5;
+  --color-dark-base: #1a1a2e;
+  --color-surface-light: #ffffff;
+
+  /* Phase-4 frosted-glass tokens — paper/cream variants */
+  --color-glass-04: rgba(58, 46, 28, 0.04);
+  --color-glass-05: rgba(58, 46, 28, 0.06);
+  --color-glass-07: rgba(58, 46, 28, 0.08);
+  --color-glass-08: rgba(255, 252, 246, 0.86);
+  --color-hairline: rgba(58, 46, 28, 0.14);
+  --color-hairline-soft: rgba(58, 46, 28, 0.08);
+
+  --color-warm-gold: #8a6a30;
+  --color-warm-gold-dim: rgba(138, 106, 48, 0.78);
+  --color-text-warm: #2a2418;
+  --color-text-warm-60: rgba(42, 36, 24, 0.66);
+  --color-text-warm-40: rgba(42, 36, 24, 0.46);
+}
+
+:root[data-theme='light'] body {
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+}
+
+/* Scrollbar gets a paper variant too */
+:root[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #ece5d8;
+}
+
+:root[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #c9b48a;
+}
+
+:root[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #a8843e;
+}
+
+:root[data-theme='light'] * {
+  scrollbar-color: #c9b48a #ece5d8;
+}
+
+/* Recharts text and grid elements inherit color via CSS, but ResponsiveContainer
+   children get inline fills — we coerce them to the secondary token so charts
+   stay legible in both modes. */
+:root[data-theme='light'] .recharts-cartesian-axis-tick text,
+:root[data-theme='light'] .recharts-legend-item-text {
+  fill: var(--color-text-secondary) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+:root[data-theme='light'] .recharts-cartesian-grid line {
+  stroke: rgba(58, 46, 28, 0.08) !important;
+}
+
+/* React Flow attribution link in light mode */
+:root[data-theme='light'] .react-flow__attribution a {
+  color: var(--color-text-warm-60);
+}
+
 @supports not (backdrop-filter: blur(1px)) {
   :root {
     --color-glass-04: rgba(255, 255, 255, 0.08);
+  }
+  :root[data-theme='light'] {
+    --color-glass-04: rgba(58, 46, 28, 0.06);
   }
 }
 

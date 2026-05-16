@@ -1,0 +1,53 @@
+/* Minimal pill toggle matching the supplied mock: long horizontal pill,
+   single circular knob, knob on the RIGHT in the default (dark) state. */
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 22px;
+  padding: 0;
+  border-radius: 9999px;
+  background: var(--color-glass-04);
+  border: 1px solid var(--color-hairline);
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease;
+  flex-shrink: 0;
+}
+
+.toggle:hover {
+  background: var(--color-glass-08);
+}
+
+.toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(212, 184, 138, 0.18);
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  /* default (dark) = knob on RIGHT, matching the supplied mock */
+  right: 3px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-text-warm);
+  transition: right 220ms cubic-bezier(0.4, 0.0, 0.2, 1),
+    background-color 220ms ease;
+}
+
+.toggleOn .knob {
+  /* light theme = knob slides LEFT, mirrors the dark-mode placement */
+  right: 27px;
+  background: var(--color-warm-gold);
+}
+
+/* In light mode, the track itself gets a slightly warmer surface so the
+   toggle is visually distinct from idle nav surface. */
+.toggleOn {
+  background: var(--color-glass-08);
+  border-color: rgba(168, 132, 62, 0.32);
+}
